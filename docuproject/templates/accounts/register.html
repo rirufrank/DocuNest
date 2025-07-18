@@ -1,0 +1,118 @@
+{% load static %}
+{% load widget_tweaks %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Register | DocuNest</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js" integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link rel="icon" href="{% static 'images/logo-removebg.ico' %}" type="image/ico">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet">
+
+    <style>
+        body {
+            background-color: #e3f8ff;
+            font-family: 'Segoe UI', sans-serif;
+        }
+
+        .navbar, .footer {
+            background-color: #0a100d;
+        }
+
+        .nav-link {
+            color: #ffffff !important;
+        }
+
+        .brand-highlight {
+            color: #02c3bd;
+        }
+
+        .register-toggle .btn {
+            border-radius: 0;
+        }
+
+        .form-card {
+            background: white;
+            border-radius: 1rem;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            padding: 2rem;
+        }
+
+        .form-label {
+            color: #4f6d7a;
+            font-weight: 600;
+        }
+
+        .btn-brand {
+            background-color: #02c3bd;
+            color: white;
+            font-weight: bold;
+        }
+
+        .btn-brand:hover {
+            background-color: #009a98;
+        }
+    </style>
+</head>
+<body style="background: linear-gradient(to top, #0a100d, #4f6d7a);">
+
+<!-- Navbar -->
+{% include 'partials/header.html' %}
+
+<div class="container mt-5 pt-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+
+            <div class="text-center mb-4">
+                <h2 class="brand-highlight fw-bold">Create Your DocuNest Account</h2>
+                <p >Choose your registration type below</p>
+            </div>
+
+            <!-- Registration Type Toggle -->
+            <div class="btn-group w-100 mb-4 register-toggle" role="group">
+                <a href="?type=individual" class="btn {% if type == 'individual' %}btn-brand text-white{% else %}btn-outline-info{% endif %}">Individual</a>
+                <a href="?type=company" class="btn {% if type == 'company' %}btn-brand text-white{% else %}btn-outline-info{% endif %}">Company</a>
+                <a href="?type=employee" class="btn {% if type == 'employee' %}btn-brand text-white{% else %}btn-outline-info{% endif %}">Employee</a>
+            </div>
+
+            <!-- Registration Form -->
+            <div class="form-card">
+                <form method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    {% if form %}
+                        {% for field in form %}
+                            <div class="mb-3">
+                                <label for="{{ field.id_for_label }}" class="form-label">{{ field.label }}</label>
+                                {{ field|add_class:"form-control" }}
+                                {% if field.help_text %}
+                                    <small class="form-text text-muted">{{ field.help_text }}</small>
+                                {% endif %}
+                                {% if field.errors %}
+                                    <div class="text-danger small">{{ field.errors|striptags }}</div>
+                                {% endif %}
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+
+                    <button type="submit" class="btn btn-brand w-100 mt-3">Register</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Footer -->
+{% include 'partials/footer.html' %}
+
+<!-- Bootstrap JS -->
+<script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
+</body>
+</html>

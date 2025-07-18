@@ -1,0 +1,26 @@
+{%load static%}
+<!DOCTYPE html>
+<html lang="en">
+{% include "partials/head.html" %}
+<body class="d-flex flex-column vh-100">
+  {% include 'partials/header.html' %}
+  <div class="d-flex flex-grow-1">
+    
+    
+        {% if user.is_authenticated %}
+          <main class="flex-grow-1 p-4">
+            {% include "partials/home_logged_in.html" %}
+          </main>
+        {% else %}
+          <main class="flex-grow-1 p-4">
+          {% include "partials/home_guest.html" %}
+          </main>
+        {% endif %}
+
+      
+    
+  </div>
+  {% include 'partials/scripts.html' %}
+  {% block content %}{% endblock %}
+</body>
+</html>

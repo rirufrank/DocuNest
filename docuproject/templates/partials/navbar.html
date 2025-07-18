@@ -1,0 +1,36 @@
+{% load static %}
+<nav class="navbar navbar-expand-lg" style="background-color: #e3f8ff;">
+  <div class="container-fluid">
+    <a class="navbar-brand d-flex align-items-center" href="{% url 'homepage' %}">
+      <img src="{% static 'images/logoremovebg.png' %}" alt="Logo" width="50" class="me-2">
+      <span class="fw-bold" style="color: #0a100d;">DocuNest</span>
+    </a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav ms-auto">
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'homepage' %}" style="color: #0a100d;">Home</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'about' %}" style="color: #0a100d;">About</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'contact' %}" style="color: #0a100d;">Contact</a>
+        </li>
+        {% if user.is_authenticated %}
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'dashboard' %}" style="color:#0a100d; ">Dashboard</a>
+        </li>
+        {% else %}
+        <li class="nav-item">
+          <a class="nav-link btn btn-sm" href="{% url 'login' %}" style="color: white; background-color: #02c3bd;">Login</a>
+        </li>
+        {% endif %}
+      </ul>
+    </div>
+  </div>
+</nav>
+
+

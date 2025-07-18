@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+ <div class="main-content">
+    <div class="container py-5">
+        
+      <div class="text-center mb-4">
+        <h1 class="display-5" style="color: #02c3bd;">Welcome to DocuNest</h1>
+        <p class="lead" style="color: #4f6d7a;">Securely manage your documents and organization</p>
+      </div>
+
+      <div class="row g-4">
+        <div class="col-md-4">
+          <div class="card shadow-sm border-0" style="background-color: #e3f8ff;">
+            <div class="card-body text-center">
+              <h5 class="card-title">My Documents</h5>
+              <p class="card-text">Upload, view, and organize your documents.</p>
+              <a href="#" class="btn btn-outline-dark">Go to Documents</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-4">
+          <div class="card shadow-sm border-0" style="background-color: #9cffff;">
+            <div class="card-body text-center">
+              <h5 class="card-title">My Profile</h5>
+              <p class="card-text">Update your personal or company details.</p>
+              <a href="#" class="btn btn-outline-dark">View Profile</a>
+              <header class="py-3" style="background-color: #9cffff;">
+                <div class="container d-fleSx justify-content-between align-items-center">
+                    <div >
+                        <a href="{% url 'logout' %}" class="btn btn-sm btn-outline-dark" style="background-color:#0a100d ; color: #02c3bd;">Logout</a>
+                    </div>
+                </div>
+                </header>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-4">
+          <div class="card shadow-sm border-0" style="background-color: #e3f8ff;">
+            <div class="card-body text-center">
+              <h5 class="card-title">Package Status</h5>
+              <p class="card-text">Manage or upgrade your subscription package.</p>
+              <a href="#" class="btn btn-outline-dark">Manage Package</a>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="card shadow-sm border-0" style="background-color: #e3f8ff;">
+            
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</body>
+{% include 'partials/footer.html'%}
+</html>

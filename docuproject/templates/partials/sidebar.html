@@ -1,0 +1,74 @@
+<!-- Sidebar toggle + collapsible sidebar -->
+<style>
+  .sidebar {
+    background-color: #0a100d;
+    color: white;
+    min-height: 100vh;
+    transition: width 0.3s ease;
+    width: 80px;
+    overflow-x: hidden;
+  }
+
+  .sidebar.expanded {
+    width: 250px;
+  }
+
+  .sidebar a {
+    color: white;
+    text-decoration: none;
+    display: block;
+    padding: 1rem;
+    white-space: nowrap;
+  }
+
+  .sidebar a:hover {
+    background-color: #02c3bd;
+    color: #0a100d;
+  }
+
+  .sidebar .toggle-btn {
+    cursor: pointer;
+    padding: 1rem;
+    text-align: center;
+    background-color: #4f6d7a;
+  }
+
+  .sidebar .icon {
+    font-size: 1.2rem;
+  }
+
+  .sidebar .label {
+    display: none;
+  }
+
+  .sidebar.expanded .label {
+    display: inline;
+    margin-left: 1rem;
+  }
+</style>
+
+<div class="d-flex">
+  <!-- Sidebar -->
+  <div id="sidebar" class="sidebar">
+    <div class="toggle-btn" onclick="toggleSidebar()">
+      <span class="icon">☰</span>
+    </div>
+    <a href="#"><span class="icon"> 🏠</span><span class="label"> Dashboard</span></a>
+    <a href="#"><span class="icon"> 📁</span><span class="label"> My Documents</span></a>
+    <a href="#"><span class="icon"> ⬆️</span><span class="label"> Upload</span></a>
+    <a href="#"><span class="icon"> 👤</span><span class="label"> Profile</span></a>
+    <a href="#"><span class="icon"> ❓</span><span class="label"> Help</span></a>
+    <a href="#"><span class="icon"> 🚪</span><span class="label"> Logout</span></a>
+  </div>
+
+  <!-- Page content will go next to the sidebar -->
+  <div class="flex-grow-1 p-3" id="page-content">
+    {% block dashboard_content %}{% endblock %}
+  </div>
+</div>
+
+<script>
+  function toggleSidebar() {
+    document.getElementById('sidebar').classList.toggle('expanded');
+  }
+</script>

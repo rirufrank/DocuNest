@@ -1,0 +1,77 @@
+  {%load static%}
+  <!-- Hero Section -->
+  <section class="py-5 bg-light text-center">
+    <div class="container">
+      <img src="{% static 'images/logoremovebg.png' %}" width="80" alt="Logo">
+      <h1 class="display-5 fw-bold mt-3">Welcome to DocuNest</h1>
+      <p class="lead">Securely store, access, and share your documents anytime, anywhere.</p>
+      <div class="mt-4">
+        <a href="#" class="btn btn-primary px-4 me-2" style="background-color: #02c3bd; border: none;">Get Started</a>
+        <a href="#" class="btn btn-outline-dark px-4">Learn More</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Features Section -->
+  <section class="py-5">
+    <div class="container text-center">
+      <h2 class="mb-4">What We Offer</h2>
+      <div class="row g-4">
+        <div class="col-md-3">
+          <div class="p-4 border rounded shadow-sm">
+            <i class="bi bi-folder fs-1 mb-3" style="color:#02c3bd;"></i>
+            <h5>Organized</h5>
+            <p>Smart folder system to keep your documents neat and categorized.</p>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="p-4 border rounded shadow-sm">
+            <i class="bi bi-shield-lock fs-1 mb-3" style="color:#02c3bd;"></i>
+            <h5>Secure</h5>
+            <p>End-to-end encryption to ensure your documents are always protected.</p>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="p-4 border rounded shadow-sm">
+            <i class="bi bi-share fs-1 mb-3" style="color:#02c3bd;"></i>
+            <h5>Fast Sharing</h5>
+            <p>Easily share files with teams or clients with just a link.</p>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="p-4 border rounded shadow-sm">
+            <i class="bi bi-chat-dots fs-1 mb-3" style="color:#02c3bd;"></i>
+            <h5>Support</h5>
+            <p>24/7 access to friendly customer support for any issues.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- About Section -->
+  <section class="py-5 bg-light">
+    <div class="container text-center">
+      <h2 class="mb-4">About Us</h2>
+      <p class="mx-auto w-75">DocuNest is a powerful document management platform tailored for both individuals and companies. Our goal is to simplify the way you store, access, and manage your documents — securely and efficiently. Whether you're organizing personal files or managing a company archive, DocuNest is built for you.</p>
+    </div>
+  </section>
+
+  <!-- Contact Section -->
+  <section class="py-5">
+    <div class="container text-center">
+      <h2 class="mb-4">Contact Us</h2>
+      <form class="mx-auto" style="max-width: 600px;">
+        <div class="mb-3">
+          <input type="text" class="form-control" placeholder="Your Name" required>
+        </div>
+        <div class="mb-3">
+          <input type="email" class="form-control" placeholder="Your Email" required>
+        </div>
+        <div class="mb-3">
+          <textarea class="form-control" placeholder="Your Message" rows="4" required></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary" style="background-color: #02c3bd; border: none;">Send Message</button>
+      </form>
+    </div>
+  </section>

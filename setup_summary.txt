@@ -1,0 +1,11 @@
+| Feature               | Value                                                 |
+| --------------------- | ----------------------------------------------------- |
+| Project root folder   | `Docunest/`                                           |
+| Django project folder | `Docunest/docuproject/`                               |
+| Main app              | `mainapp/`                                            |
+| Template structure    | Modular (not using `base.html`)                       |
+| Shared components     | Stored in `templates/partials/`                       |
+| Frontend tools        | HTML, Bootstrap, HTMX                                 |
+| Public pages          | Welcome, Home, About, Contact                         |
+| Brand colors          | `#0a100d`, `#4f6d7a`, `#02c3bd`, `#9cffff`, `#e3f8ff` |
+| Database              | MySQL, viewed in DBeaver                              |

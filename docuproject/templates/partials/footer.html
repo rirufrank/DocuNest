@@ -1,0 +1,66 @@
+{% load static  %}
+<style>
+  .footer-link {
+    color: #9cffff;
+    text-decoration: none;
+  }
+
+  .footer-link:hover {
+    color: #02c3bd;
+    text-decoration: underline;
+  }
+
+  .social-icon {
+    color: #9cffff;
+    font-size: 1.4rem;
+    margin-right: 15px;
+    text-decoration: none;
+  }
+
+  .social-icon:hover {
+    color: #02c3bd;
+  }
+</style>
+
+<footer class="mt-auto py-5 text-light" style="background-color: #0a100d;">
+  <div class="container">
+    <div class="row">
+      <!-- Logo & About -->
+      <div class="col-md-4 mb-4">
+        <img src="{% static 'images/logo_.png' %}" alt="DocuNest Logo" style="width: 130px; border-radius: 20px">
+        <p class="mt-3 small text">
+          DocuNest is your secure digital nest for document management — whether you're an individual or an enterprise.
+        </p>
+      </div>
+
+      <!-- Resources / Policies -->
+      <div class="col-md-4 mb-4">
+        <h5 class="text-uppercase" style="color: #02c3bd;">Resources</h5>
+        <ul class="list-unstyled small">
+          <li><a href="#" class="footer-link">Privacy Policy</a></li>
+          <li><a href="#" class="footer-link">Terms of Service</a></li>
+          <li><a href="#" class="footer-link">Data Protection Policy</a></li>
+        </ul>
+      </div>
+
+      <!-- Contact Info & Social -->
+      <div class="col-md-4 mb-4">
+        <h5 class="text-uppercase" style="color: #02c3bd;">Contact Us</h5>
+        <p class="small mb-1"><i class="bi bi-envelope"></i> support@docunest.com</p>
+        <p class="small mb-3"><i class="bi bi-telephone"></i> +254 712 345 678</p>
+        <div>
+          <a href="#" class="social-icon"><i class="bi bi-facebook"></i></a>
+          <a href="#" class="social-icon"><i class="bi bi-twitter-x"></i></a>
+          <a href="#" class="social-icon"><i class="bi bi-instagram"></i></a>
+          <a href="#" class="social-icon"><i class="bi bi-linkedin"></i></a>
+        </div>
+      </div>
+    </div>
+
+    <hr class="border-secondary" />
+
+    <div class="text-center small text-teal">
+      &copy; {% now "Y" %} DocuNest. All rights reserved.
+    </div>
+  </div>
+</footer>

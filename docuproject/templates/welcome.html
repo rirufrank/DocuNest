@@ -1,0 +1,72 @@
+{%load static%}
+<!DOCTYPE html>
+<html lang="en">
+  {% include "partials/head.html" %}
+<body>
+  {% include "partials/navbar.html" %}
+
+  <main class="container py-5">
+    <div class="text-center">
+      <h1 style="color: #4f6d7a;">Welcome to DocuNest</h1>
+      <p class="lead">Organize, store, and access your documents with ease.</p>
+      <a href="{% url 'homepage' %}" class="btn btn-brand">Enter Site</a>
+    </div>
+
+  </main>
+<!-- Services Section -->
+<section id="services" class="py-5 bg-white text-center">
+  <h2 class="fs-2 fw-bold mb-4 text-dark">Our Services</h2>
+  <div class="row row-cols-1 row-cols-md-3 g-4 container mx-auto">
+    <div class="col">
+      <div class="p-4 rounded shadow-sm h-100 bg-light border-start border-4 border-primary">
+        <i class="bi bi-file-earmark-text fs-1 mb-3 text-primary"></i>
+        <h3 class="h5 fw-bold mb-2">Document Storage</h3>
+        <p>Secure cloud storage with easy access anytime, anywhere.</p>
+      </div>
+    </div>
+    <div class="col">
+      <div class="p-4 rounded shadow-sm h-100 bg-light border-start border-4 border-info">
+        <i class="bi bi-shield-lock fs-1 mb-3 text-info"></i>
+        <h3 class="h5 fw-bold mb-2">Data Security</h3>
+        <p>End-to-end encryption to protect your sensitive documents.</p>
+      </div>
+    </div>
+    <div class="col">
+      <div class="p-4 rounded shadow-sm h-100 bg-light border-start border-4 border-dark">
+        <i class="bi bi-share fs-1 mb-3 text-dark"></i>
+        <h3 class="h5 fw-bold mb-2">Easy Sharing</h3>
+        <p>Quickly share documents with your team or clients with ease.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- About Section -->
+<section id="about" class="py-5 text-center" style="background-color: #e3f8ff;">
+  <h2 class="fs-2 fw-bold mb-4 text-dark">About Us</h2>
+  <p class="lead text-secondary px-3 px-md-5 mx-auto" style="max-width: 800px;">
+    DocuNest is a modern document management platform crafted to help you store, access, and manage files with ease. We focus on simplicity, security, and flexibility for individuals and businesses alike.
+  </p>
+</section>
+
+<!-- Contact Section -->
+<section id="contact" class="py-5 bg-white text-center">
+  <h2 class="fs-2 fw-bold mb-4 text-dark">Contact Us</h2>
+  <form class="mx-auto px-3" style="max-width: 600px;" action="#" method="POST">
+    <div class="mb-3">
+      <input type="text" name="name" class="form-control p-3" placeholder="Your Name" required>
+    </div>
+    <div class="mb-3">
+      <input type="email" name="email" class="form-control p-3" placeholder="Your Email" required>
+    </div>
+    <div class="mb-3">
+      <textarea name="message" class="form-control p-3" rows="5" placeholder="Your Message" required></textarea>
+    </div>
+    <button type="submit" class="btn px-4 py-2 fw-bold text-white" style="background-color: #02c3bd;">Send Message</button>
+  </form>
+</section>
+
+  {% include "partials/footer.html" %}
+  {% include "partials/scripts.html" %}
+</body>
+</html>

@@ -37,6 +37,11 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'mainapp',
+    'accounts', 
+    'widget_tweaks',
+    'packages',
+    'documents',
 ]
 
 MIDDLEWARE = [
@@ -45,9 +50,11 @@ MIDDLEWARE = [
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
+    #'packages.middleware.check_package.PackageCheckMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
 
 ROOT_URLCONF = 'docuproject.urls'
 
@@ -74,8 +81,15 @@ WSGI_APPLICATION = 'docuproject.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'docunest',
+        'USER' : 'root',
+        'PASSWORD' : 'muriruMR254$',
+        'HOST' : 'localhost',
+        'PORT' : '3306',
+        'OPTIONS':{
+            'charset' : 'utf8mb4', #for full unicode(emojis, symbols)
+        }
     }
 }
 
@@ -98,6 +112,7 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+AUTH_USER_MODEL = 'accounts.CustomUser'
 
 # Internationalization
 # https://docs.djangoproject.com/en/5.2/topics/i18n/
@@ -115,7 +130,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
 STATIC_URL = '/static/'
-STATICFILES_DIRS = [BASE_DIR / 'static']  # For global static assets (optional)
+STATICFILES_DIRS = [BASE_DIR / 'static']  # For global static assets 
 STATIC_ROOT = BASE_DIR / 'staticfiles'    # Where collectstatic will put files
 
 # Default primary key field type
