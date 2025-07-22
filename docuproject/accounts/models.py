@@ -1,8 +1,15 @@
 
-
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.utils.translation import gettext_lazy as _
+
+
+class Department(models.Model):
+    name = models.CharField(max_length=100)
+    company = models.ForeignKey('accounts.CustomUser', on_delete=models.CASCADE, limit_choices_to={'user_type': 'company'})
+
+    def __str__(self):
+        return f"{self.name} ({self.company.companyprofile.company_name})"
 
 class CustomUser(AbstractUser):
     USER_TYPES = (
@@ -46,6 +53,7 @@ class CompanyProfile(models.Model):
     admin_phone = models.CharField(max_length=20)
     industry = models.CharField(max_length=100, blank=True, null=True)  # ✅ New
     number_of_employees = models.PositiveIntegerField(blank=True, null=True)  # ✅ New
+    department = models.ForeignKey('accounts.Department', on_delete=models.SET_NULL, null=True, blank=True)
 
     def __str__(self):
         return self.company_name
@@ -60,7 +68,7 @@ class EmployeeProfile(models.Model):
     gender = models.CharField(max_length=10, blank=True)
     profile_picture = models.ImageField(upload_to='profiles/', blank=True, null=True)
     employee_code = models.CharField(max_length=50, blank=True)
-    department_name = models.CharField(max_length=100, blank=True)
+    department = models.ForeignKey(Department,on_delete=models.SET_NULL,null=True,blank=True)
     status = models.CharField(max_length=20, choices=[('active', 'Active'), ('suspended', 'Suspended')], default='active')
     join_date = models.DateField(auto_now_add=True)
 

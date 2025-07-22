@@ -1,9 +1,10 @@
 # accounts/forms.py
 from django.contrib.auth.forms import AuthenticationForm
 from django import forms
+from django.db import models
 from django.contrib.auth.forms import UserCreationForm
 from django.forms.utils import ErrorList
-from .models import CustomUser, IndividualProfile, CompanyProfile, EmployeeProfile
+from .models import CustomUser, IndividualProfile, CompanyProfile, EmployeeProfile, Department
 
 class CustomFormMixin:
     def __init__(self, *args, **kwargs):
@@ -71,7 +72,6 @@ class CompanyAdminRegistrationForm(UserCreationForm):
                 admin_full_name=self.cleaned_data['admin_full_name'],
                 admin_phone=self.cleaned_data['admin_phone'],
                 industry=self.cleaned_data.get('industry'),
-                number_of_employees=self.cleaned_data.get('number_of_employees'),
             )
         return user
 
@@ -82,13 +82,28 @@ class EmployeeRegistrationForm(UserCreationForm):
     gender = forms.ChoiceField(choices=[('male', 'Male'), ('female', 'Female')], required=False)
     profile_picture = forms.ImageField(required=False)
     employee_code = forms.CharField(max_length=50, required=False)
-    department_name = forms.CharField(max_length=100, required=False)
     status = forms.ChoiceField(choices=[('active', 'Active'), ('suspended', 'Suspended')])
     company = forms.ModelChoiceField(queryset=CustomUser.objects.filter(user_type='company'))
+    department = forms.ModelChoiceField(queryset=Department.objects.none(), required=True)
 
     class Meta:
         model = CustomUser
         fields = ['email', 'password1', 'password2']
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        # Dynamically load departments based on selected company
+        if 'company' in self.data:
+            try:
+                company_id = int(self.data.get('company'))
+                self.fields['department'].queryset = Department.objects.filter(company_id=company_id)
+            except (ValueError, TypeError):
+                pass
+        elif self.initial.get('company'):
+            self.fields['department'].queryset = Department.objects.filter(company=self.initial['company'])
+        else:
+            self.fields['department'].queryset = Department.objects.none()
 
     def save(self, commit=True):
         user = super().save(commit=False)
@@ -104,7 +119,7 @@ class EmployeeRegistrationForm(UserCreationForm):
                 gender=self.cleaned_data.get('gender'),
                 profile_picture=self.cleaned_data.get('profile_picture'),
                 employee_code=self.cleaned_data.get('employee_code'),
-                department_name=self.cleaned_data.get('department_name'),
+                department=self.cleaned_data.get('department'),
                 status=self.cleaned_data['status']
             )
         return user
@@ -118,3 +133,11 @@ class LoginForm(AuthenticationForm):
         'class': 'form-control',
         'placeholder': 'Password',
     }))
+
+class DepartmentForm(forms.ModelForm):
+    class Meta:
+        model = Department
+        fields = ['name']
+        widgets = {
+            'name': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Department name'})
+        }

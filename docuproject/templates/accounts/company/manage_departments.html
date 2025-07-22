@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>Manage Departments</h2>
+
+<form method="post" class="mb-4">
+  {% csrf_token %}
+  {{ form.as_p }}
+  <button type="submit" class="btn btn-primary">Add Department</button>
+</form>
+
+<table class="table">
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for dept in departments %}
+    <tr>
+      <td>{{ dept.name }}</td>
+      <td>
+        <a href="{% url 'edit_department' dept.id %}" class="btn btn-sm btn-warning">Edit</a>
+        <a href="{% url 'delete_department' dept.id %}" class="btn btn-sm btn-danger" onclick="return confirm('Delete this department?')">Delete</a>
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

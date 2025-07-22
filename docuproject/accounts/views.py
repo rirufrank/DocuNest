@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-from .forms import IndividualRegistrationForm, CompanyAdminRegistrationForm, EmployeeRegistrationForm, LoginForm
+from .forms import IndividualRegistrationForm,DepartmentForm, CompanyAdminRegistrationForm, EmployeeRegistrationForm, LoginForm
 from django.contrib import messages
 from django.contrib.auth import authenticate , login , logout
 from django.contrib.auth.decorators import login_required
@@ -9,7 +9,8 @@ from django.db.models import Sum
 from documents.forms import DocumentForm
 from django.utils import timezone
 from datetime import datetime
-from .models import CustomUser, EmployeeProfile
+from django.shortcuts import get_object_or_404
+from .models import CustomUser, EmployeeProfile, CompanyProfile, Department
 
 
 def role_required(required_role):
@@ -119,8 +120,6 @@ def individual_dashboard(request):
     }
     return render(request, 'accounts/individual.html', context)
 
-
-
 @role_required('company')
 @login_required
 def company_dashboard(request):
@@ -132,6 +131,8 @@ def company_dashboard(request):
 
 
     total_documents = company_documents.count()
+    #Company details
+    company_profile = CompanyProfile.objects.get(user=request.user)
 
     # Calculate storage usage in MB or GB (assumes `document.file.size`)
     total_storage_used = sum(doc.file.size for doc in company_documents)  # bytes
@@ -149,13 +150,14 @@ def company_dashboard(request):
     # Documents uploaded this month
     now = timezone.now()
     monthly_uploads = company_documents.filter(uploaded_at__year=now.year, uploaded_at__month=now.month).count()
-
+    
     context = {
         'total_documents': total_documents,
         'used_storage_gb': used_storage_gb,
         'total_storage_gb': total_storage_gb,
         'storage_percent': min(storage_percent, 100),  # cap at 100
         'employee_count': employee_count,
+        'company_profile': company_profile,
         'monthly_uploads': monthly_uploads,
         'employees' : employees
     }
@@ -172,3 +174,49 @@ def employee_dashboard(request):
 def superadmin_dashboard(request):
     # System-wide overview
     return render(request, 'accounts/superadmin.html')
+
+@role_required('company')
+@login_required
+def manage_departments(request):
+    company_user = request.user
+    departments = Department.objects.filter(company=company_user)
+
+    if request.method == 'POST':
+        form = DepartmentForm(request.POST)
+        if form.is_valid():
+            department = form.save(commit=False)
+            department.company = company_user
+            department.save()
+            return redirect('manage_departments')
+    else:
+        form = DepartmentForm()
+
+    return render(request, 'accounts/company/manage_departments.html', {
+        'departments': departments,
+        'form': form,
+    })
+
+@login_required
+@role_required('company')
+def edit_department(request, dept_id):
+    department = get_object_or_404(Department, id=dept_id, company=request.user)
+
+    if request.method == 'POST':
+        form = DepartmentForm(request.POST, instance=department)
+        if form.is_valid():
+            form.save()
+            return redirect('manage_departments')
+    else:
+        form = DepartmentForm(instance=department)
+
+    return render(request, 'accounts/company/edit_department.html', {
+        'form': form,
+        'department': department,
+    })
+
+@login_required
+@role_required('company')
+def delete_department(request, dept_id):
+    department = get_object_or_404(Department, id=dept_id, company=request.user)
+    department.delete()
+    return redirect('manage_departments')

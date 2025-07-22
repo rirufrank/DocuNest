@@ -11,4 +11,7 @@ urlpatterns = [
     path('dashboard/employee/', views.employee_dashboard, name='employee_dashboard'),
     path('dashboard/superadmin/', views.superadmin_dashboard, name='superadmin_dashboard'),
     path('logout/', views.user_logout, name = 'logout'),
+    path('dashboard/company/departments/', views.manage_departments, name='manage_departments'),
+    path('dashboard/company/departments/edit/<int:dept_id>/', views.edit_department, name='edit_department'),
+    path('dashboard/company/departments/delete/<int:dept_id>/', views.delete_department, name='delete_department'),
 ]
