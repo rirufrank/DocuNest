@@ -48,20 +48,9 @@
 </head>
 <body>
 
-    <!-- Sidebar -->
-    <div class="sidebar d-flex flex-column">
-        <h4 class="text-center mt-3">Company Management</h4>
-        <a href="{% url 'accounts:dashboard' %}">🏠 Dashboard</a>
-        <a href="{% url 'accounts:manage_departments' %}">🏢 Departments</a>
-        <a href="#">👥 Employees</a>
-        <a href="#">📁 Documents</a>
-        <a href="#">⚙️ Company Profile</a>
-        <a href="{% url 'accounts:logout' %}">🚪 Logout</a>
-    </div>
-
     <!-- Content -->
-    <div class="content" style="background-color:#e3f8ff ;">
-        {%include 'partials/navbar.html'%}
+    <div class="content">
+        {% include 'partials/navbar.html'%}
         <div class="topbar d-flex justify-content-between align-items-center">
             <span><strong>Welcome, {{ request.user.companyprofile.company_name }}</strong></span>
             <span>{{ request.user.email }}</span>
@@ -69,8 +58,8 @@
 
         {% block content %}
         {% endblock %}
+        
     </div>
-
     <!-- JS: Bootstrap, Toastr -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
@@ -84,7 +73,7 @@
             {% endfor %}
         {% endif %}
     </script>
-
+    
     {% block extra_js %}{% endblock %}
 </body>
 </html>

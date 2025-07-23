@@ -1,0 +1,162 @@
+{%load static%}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Select Package | DocuNest</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js" integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link rel="icon" href="{% static 'images/logo-removebg.ico' %}" type="image/ico">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet">
+    <style>
+      .hover-shadow:hover {
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        transition: box-shadow 0.3s ease;
+      }
+
+    </style>
+  </head>
+<body>
+{% include 'partials/navbar.html' %}
+
+<div class="container-fluid">
+  <div class="row">
+    <!-- Main Content -->
+    <main class="col-md-9 col-12 py-5 px-4 mx-auto">
+      <h2 class="mb-5 text-center fw-bold">Choose Your Plan</h2>
+
+      <!-- INDIVIDUAL PACKAGES -->
+      <h3 class="mb-4">Individual Packages</h3>
+      <div class="row row-cols-1 row-cols-md-2 g-4 justify-content-center">
+        {% for package in individual_packages %}
+        <div class="col">
+          <a href="{% url 'packages:activate_package' package.id %}" class="text-decoration-none text-dark">
+            <div class="card h-100 shadow border-0 hover-shadow transition">
+              <div class="card-body text-center">
+                <h5 class="card-title fw-semibold">{{ package.name }}</h5>
+                <p class="text-muted small">{{ package.description }}</p>
+                <hr>
+                <p class="mb-1"><strong>Storage:</strong> {{ package.storage_limit_gb }} GB</p>
+                <p class="mb-1"><strong>Price:</strong> ${{ package.price }}</p>
+                <span class="badge bg-primary mt-2">{{ package.support_level|capfirst }} Support</span>
+              </div>
+            </div>
+          </a>
+        </div>
+        {% empty %}
+        <div class="col">
+          <p class="text-muted">No individual packages available.</p>
+        </div>
+        {% endfor %}
+      </div>
+
+      <!-- COMPANY PACKAGES -->
+      <h3 class="mt-5 mb-4">Company Packages</h3>
+      <div class="row row-cols-1 row-cols-md-2 g-4 justify-content-center">
+        {% for package in company_packages %}
+        <div class="col">
+          <a href="{% url 'packages:activate_package' package.id %}" class="text-decoration-none text-dark">
+            <div class="card h-100 shadow border-0 hover-shadow transition">
+              <div class="card-body text-center">
+                <h5 class="card-title fw-semibold">{{ package.name }}</h5>
+                <p class="text-muted small">{{ package.description }}</p>
+                <hr>
+                <p class="mb-1"><strong>Storage:</strong> {{ package.storage_limit_gb }} GB</p>
+                <p class="mb-1"><strong>Max Employees:</strong> {{ package.max_employees }}</p>
+                <p class="mb-1"><strong>Price:</strong> ${{ package.price }}</p>
+                <span class="badge bg-success mt-2">{{ package.support_level|capfirst }} Support</span>
+              </div>
+            </div>
+          </a>
+        </div>
+        {% empty %}
+        <div class="col">
+          <p class="text-muted">No company packages available.</p>
+        </div>
+        {% endfor %}
+      </div>
+    </main>
+  </div>
+</div>
+
+<style>
+  .card:hover {
+    transform: scale(1.02);
+    transition: all 0.3s ease-in-out;
+    box-shadow: 0 0.5rem 1rem rgba(0,0,0,0.15);
+  }
+  .footer-link {
+    color: #9cffff;
+    text-decoration: none;
+  }
+
+  .footer-link:hover {
+    color: #02c3bd;
+    text-decoration: underline;
+  }
+
+  .social-icon {
+    color: #9cffff;
+    font-size: 1.4rem;
+    margin-right: 15px;
+    text-decoration: none;
+  }
+
+  .social-icon:hover {
+    color: #02c3bd;
+  }
+</style>
+
+<footer class="mt-auto py-5 text-light" style="background-color: #0a100d;">
+  <div class="container">
+    <div class="row">
+      <!-- Logo & About -->
+      <div class="col-md-4 mb-4">
+        <img src="{% static 'images/logo_.png' %}" alt="DocuNest Logo" style="width: 130px; border-radius: 20px">
+        <p class="mt-3 small text">
+          DocuNest is your secure digital nest for document management — whether you're an individual or an enterprise.
+        </p>
+      </div>
+
+      <!-- Resources / Policies -->
+      <div class="col-md-4 mb-4">
+        <h5 class="text-uppercase" style="color: #02c3bd;">Resources</h5>
+        <ul class="list-unstyled small">
+          <li><a href="#" class="footer-link">Privacy Policy</a></li>
+          <li><a href="#" class="footer-link">Terms of Service</a></li>
+          <li><a href="#" class="footer-link">Data Protection Policy</a></li>
+        </ul>
+      </div>
+
+      <!-- Contact Info & Social -->
+      <div class="col-md-4 mb-4">
+        <h5 class="text-uppercase" style="color: #02c3bd;">Contact Us</h5>
+        <p class="small mb-1"><i class="bi bi-envelope"></i> support@docunest.com</p>
+        <p class="small mb-3"><i class="bi bi-telephone"></i> +254 712 345 678</p>
+        <div>
+          <a href="#" class="social-icon"><i class="bi bi-facebook"></i></a>
+          <a href="#" class="social-icon"><i class="bi bi-twitter-x"></i></a>
+          <a href="#" class="social-icon"><i class="bi bi-instagram"></i></a>
+          <a href="#" class="social-icon"><i class="bi bi-linkedin"></i></a>
+        </div>
+      </div>
+    </div>
+
+    <hr class="border-secondary" />
+
+    <div class="text-center small text-teal">
+      &copy; {% now "Y" %} DocuNest. All rights reserved.
+    </div>
+  </div>
+</footer>
+
+
+
+</body>
+</html>

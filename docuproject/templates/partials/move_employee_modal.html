@@ -1,0 +1,16 @@
+<form method="post" hx-post="{% url 'accounts:move_employee_department' employee.id %}" hx-target="#modal-body" hx-swap="innerHTML">
+    {% csrf_token %}
+    <div class="mb-3">
+        <label for="department" class="form-label">Select Department</label>
+        <select name="department" class="form-select" required>
+            {% for dept in departments %}
+                <option value="{{ dept.id }}">{{ dept.name }}</option>
+            {% empty %}
+                <option disabled>No departments available</option>
+            {% endfor %}
+        </select>
+    </div>
+    <div class="d-flex justify-content-end">
+        <button type="submit" class="btn btn-primary">Move</button>
+    </div>
+</form>

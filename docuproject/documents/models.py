@@ -49,7 +49,6 @@ class Document(models.Model):
         related_name='documents_shared_with_me',
         blank=True
     )
-
     def get_icon_class(self):
         mapping = {
             'pdf': 'bi-file-earmark-pdf',
@@ -60,8 +59,15 @@ class Document(models.Model):
             'png': 'bi-file-earmark-image',
             'xlsx': 'bi-file-earmark-excel',
             'xls': 'bi-file-earmark-excel',
+            'ppt': 'bi-file-earmark-ppt',
+            'pptx': 'bi-file-earmark-ppt',
+            'mp3': 'bi-file-earmark-music',
+            'wav': 'bi-file-earmark-music',
+            'mp4': 'bi-file-earmark-play',
+            'mkv': 'bi-file-earmark-play',
+            'txt': 'bi-file-earmark-text',
         }
-        return mapping.get(self.file_type.lower(), 'bi-file-earmark')
+        return mapping.get(self.file_type, 'bi-file-earmark')  
     
     # Optional: Department (if tied to employee)
     department = models.CharField(max_length=100, blank=True, null= True)
@@ -76,7 +82,11 @@ class Document(models.Model):
         return self.title
 
     def file_extension(self):
-        return os.path.splitext(self.file.name)[1].lower().replace(".", "")
+        return self.file.name.split('.')[-1].lower()
+
+    @property
+    def file_type(self):
+        return self.file_extension()
 
     def readable_file_size(self):
         # Convert bytes to KB/MB/GB
@@ -88,12 +98,11 @@ class Document(models.Model):
         return f"{size:.2f} TB"
     
     def categorize_file_type(self):
+        ext = self.file_extension()
         image_types = ('png', 'jpg', 'jpeg', 'gif', 'bmp', 'webp', 'ico')
         document_types = ('pdf', 'doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx')
         video_types = ('mp4', 'mkv', 'mov')
         audio_types = ('mp3', 'wav', 'ogg')
-
-        ext = self.file_extension()
 
         if ext in image_types:
             return 'Image'

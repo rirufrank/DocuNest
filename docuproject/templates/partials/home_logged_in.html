@@ -12,7 +12,7 @@
             <div class="card-body text-center">
               <h5 class="card-title">My Documents</h5>
               <p class="card-text">Upload, view, and organize your documents.</p>
-              <a href="#" class="btn btn-outline-dark">Go to Documents</a>
+              <a href="{% url 'documents:documentredirect'%}" class="btn btn-outline-dark">Go to Documents</a>
             </div>
           </div>
         </div>
@@ -26,7 +26,7 @@
               <header class="py-3" style="background-color: #9cffff;">
                 <div class="container d-fleSx justify-content-between align-items-center">
                     <div >
-                        <a href="{% url 'logout' %}" class="btn btn-sm btn-outline-dark" style="background-color:#0a100d ; color: #02c3bd;">Logout</a>
+                        <a href="{% url 'accounts:logout' %}" class="btn btn-sm btn-outline-dark" style="background-color:#0a100d ; color: #02c3bd;">Logout</a>
                     </div>
                 </div>
                 </header>

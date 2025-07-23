@@ -71,7 +71,7 @@
       <!-- File Type Group -->
       <div class="col-md-2">
         <select name="file_type" class="form-select">
-          <option value="">All File Types</option>
+          <option value=""class="fst-italic"> --All Files--</option>
           {% for ft in file_type_groups %}
             <option value="{{ ft }}" {% if request.GET.file_type == ft %}selected{% endif %}>{{ ft }}</option>
           {% endfor %}
@@ -81,7 +81,7 @@
       <!-- File Extension -->
       <div class="col-md-3">
         <select name="extension" class="form-select">
-          <option value="">File extension</option>
+          <option value=""class="fst-italic"> --File Extension--</option>
           {% for ext in all_extensions %}
             <option value="{{ ext }}" {% if request.GET.extension == ext %}selected{% endif %}>.{{ ext }}</option>
           {% endfor %}
@@ -91,7 +91,7 @@
       <!-- Date Range -->
       <div class="col-md-2">
         <select name="date_filter" class="form-select">
-          <option value="">Any Date</option>
+          <option value=""class="fst-italic"> --Date--</option>
           <option value="today" {% if request.GET.date_filter == "today" %}selected{% endif %}>Today</option>
           <option value="this_week" {% if request.GET.date_filter == "this_week" %}selected{% endif %}>This Week</option>
           <option value="this_month" {% if request.GET.date_filter == "this_month" %}selected{% endif %}>This Month</option>

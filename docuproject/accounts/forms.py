@@ -84,26 +84,10 @@ class EmployeeRegistrationForm(UserCreationForm):
     employee_code = forms.CharField(max_length=50, required=False)
     status = forms.ChoiceField(choices=[('active', 'Active'), ('suspended', 'Suspended')])
     company = forms.ModelChoiceField(queryset=CustomUser.objects.filter(user_type='company'))
-    department = forms.ModelChoiceField(queryset=Department.objects.none(), required=True)
 
     class Meta:
         model = CustomUser
         fields = ['email', 'password1', 'password2']
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-
-        # Dynamically load departments based on selected company
-        if 'company' in self.data:
-            try:
-                company_id = int(self.data.get('company'))
-                self.fields['department'].queryset = Department.objects.filter(company_id=company_id)
-            except (ValueError, TypeError):
-                pass
-        elif self.initial.get('company'):
-            self.fields['department'].queryset = Department.objects.filter(company=self.initial['company'])
-        else:
-            self.fields['department'].queryset = Department.objects.none()
 
     def save(self, commit=True):
         user = super().save(commit=False)
@@ -119,8 +103,8 @@ class EmployeeRegistrationForm(UserCreationForm):
                 gender=self.cleaned_data.get('gender'),
                 profile_picture=self.cleaned_data.get('profile_picture'),
                 employee_code=self.cleaned_data.get('employee_code'),
-                department=self.cleaned_data.get('department'),
                 status=self.cleaned_data['status']
+                # department is now omitted
             )
         return user
 
@@ -141,3 +125,8 @@ class DepartmentForm(forms.ModelForm):
         widgets = {
             'name': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Department name'})
         }
+
+class EmployeeProfileForm(forms.ModelForm):
+    class Meta:
+        model = EmployeeProfile
+        fields = ['full_name', 'phone', 'employee_code', 'department']

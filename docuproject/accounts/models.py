@@ -71,6 +71,7 @@ class EmployeeProfile(models.Model):
     department = models.ForeignKey(Department,on_delete=models.SET_NULL,null=True,blank=True)
     status = models.CharField(max_length=20, choices=[('active', 'Active'), ('suspended', 'Suspended')], default='active')
     join_date = models.DateField(auto_now_add=True)
+    is_active = models.BooleanField(default=True) 
 
     def __str__(self):
-        return f"{self.full_name} ({self.department_name})"
+        return f"{self.full_name} ({self.department})"

@@ -1,0 +1,22 @@
+{% extends "packages/base.html" %}
+{% block content %}
+<div class="container mt-5">
+  <h2>Checkout</h2>
+  <p>You are about to purchase: <strong>{{ package.name }}</strong></p>
+  <h5>{{ package.name }}</h5>
+    <ul>
+      {% for feature in package.features.all %}
+        <li>{{ feature.name }}</li>
+      {% empty %}
+        <li>No features listed yet.</li>
+      {% endfor %}
+    </ul>
+    
+  <p><strong>Price:</strong> Ksh {{ package.price }}</p>
+    <form method="POST" action="{% url 'packages:payment_processing' package.id %}">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-success">Confirm & Pay</button>
+    </form>
+
+</div>
+{% endblock %}

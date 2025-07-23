@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Access Denied</title>
+    <meta http-equiv="refresh" content="5;url={{ redirect_url }}">
+    <script>
+        setTimeout(() => {
+            window.location.href = "{{ redirect_url }}";
+        }, {{ delay }});
+    </script>
+</head>
+<body>
+    <div style="text-align:center; padding: 2rem;">
+        <h2>{{ message }}</h2>
+        <p>If you're not redirected, <a href="{{ redirect_url }}">click here</a>.</p>
+    </div>
+</body>
+</html>

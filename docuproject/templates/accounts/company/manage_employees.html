@@ -1,0 +1,44 @@
+{% extends 'accounts/company/base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container mt-4">
+  <h2 class="mb-3">Manage Employees</h2>
+  <table class="table table-bordered">
+    <thead>
+      <tr>
+        <th>Full Name</th>
+        <th>Email</th>
+        <th>Department</th>
+        <th>Employee Code</th>
+        <th>Status</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for employee in employees %}
+      <tr>
+        <td>{{ employee.employeeprofile.full_name }}</td>
+        <td>{{ employee.email }}</td>
+        <td>{{ employee.employeeprofile.department.name}}</td>
+        <td>{{ employee.employeeprofile.employee_code }}</td>
+        <td>
+          {% if employee.employeeprofile.is_active %}
+            <span class="badge bg-success">Active</span>
+          {% else %}
+            <span class="badge bg-secondary">Inactive</span>
+          {% endif %}
+        </td>
+        <td>
+          <a href="{% url 'accounts:toggle_employee_status' employee.id %}" class="btn btn-sm btn-warning">Toggle</a>
+          <a href="{% url 'accounts:view_employee_detail' employee.id %}" class="btn btn-sm btn-info">View</a>
+          
+        </td>
+      </tr>
+      {% empty %}
+      <tr><td colspan="6">No employees found.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

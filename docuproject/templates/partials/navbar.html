@@ -21,7 +21,7 @@
         </li>
         {% if user.is_authenticated %}
         <li class="nav-item">
-          <a class="nav-link" href="{% url 'dashboard' %}" style="color:#0a100d; ">Dashboard</a>
+          <a class="nav-link" href="{% url 'accounts:dashboard' %}" style="color:#0a100d; ">Dashboard</a>
         </li>
         {% else %}
         <li class="nav-item">

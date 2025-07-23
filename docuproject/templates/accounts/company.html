@@ -117,11 +117,11 @@
                 </button>
                 <div class="collapse navbar-collapse" id="navbarNav">
                   <ul class="navbar-nav ms-auto">
-                    <li class="nav-item"><a class="nav-link" href="#">Departments</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'accounts:manage_departments'%}">Departments</a></li>
                     <li class="nav-item"><a class="nav-link" href="#">Employees</a></li>
                     <li class="nav-item"><a class="nav-link" href="#">Documents</a></li>
                     <li class="nav-item"><a class="nav-link" href="#">Profile</a></li>
-                    <li class="nav-item"><a class="nav-link text-danger" href="{% url 'logout' %}">Logout</a></li>
+                    <li class="nav-item"><a class="nav-link text-danger" href="{% url 'accounts:logout' %}">Logout</a></li>
                   </ul>
                 </div>
               </div>
@@ -269,10 +269,10 @@
           <div class="card mb-4">
             <div class="card-header"><h5>Package & Billing</h5></div>
             <div class="card-body">
-              <p><strong>Current Package:</strong> {{ package.name }}</p>
-              <p><strong>Employees Limit:</strong> {{ package.employee_limit }}</p>
-              <p><strong>Storage:</strong> {{ package.storage_limit }} MB</p>
-              <p><strong>Expiry:</strong> {{ package.expiry_date }}</p>
+              <p><strong>Current Package:</strong> {{ user_package.package.name }}</p>
+              <p><strong>Employees Limit:</strong> {{ user_package.package.max_employees }}</p>
+              <p><strong>Storage:</strong> {{ user_package.package.storage_limit_gb }} MB</p>
+              <p><strong>Expiry:</strong> {{ user_package.end_date }}</p>
               <button class="btn btn-warning">Upgrade Package</button>
               <button class="btn btn-info">View Invoices</button>
             </div>
