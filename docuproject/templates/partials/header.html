@@ -21,10 +21,15 @@
                       <a class="nav-link text-light " href="{% url 'about' %}">About</a>
                   </li>
                   <li class="nav-item">
-                      <a class="nav-link text-light" href="#">Services</a>
+                      <a class="nav-link text-light" href="{%url 'services'%}">Services</a>
                   </li>
                   <li class="nav-item">
                       <a class="nav-link text-light " href="{% url 'contact' %}">Contact</a>
+                  </li>
+                  <li class="nav-item">
+                      <a class="nav-link text-light" href="{% url 'help' %}" title="Help">
+                          <i class="bi bi-question-circle-fill"></i>
+                      </a>
                   </li>
               </ul>
             </div>

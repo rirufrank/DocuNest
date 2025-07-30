@@ -1,0 +1,76 @@
+{% extends 'helpcenter/helpbase.html' %}
+{% block content %}
+<div class="container py-4">
+  <h1 class="mb-4">Help Center</h1>
+
+  <div class="accordion" id="helpAccordion">
+    <!-- Individual Users -->
+    <div class="accordion-item">
+      <h2 class="accordion-header" id="headingIndividual1">
+        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseIndividual1" aria-expanded="true">
+          <i class="bi bi-upload me-2"></i>How do I upload a document?
+        </button>
+      </h2>
+      <div id="collapseIndividual1" class="accordion-collapse collapse show" data-bs-parent="#helpAccordion">
+        <div class="accordion-body">
+          Go to your dashboard, click “Upload Document”, fill in the required fields, and choose a file to upload.
+        </div>
+      </div>
+    </div>
+
+    <div class="accordion-item">
+      <h2 class="accordion-header" id="headingIndividual2">
+        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseIndividual2" aria-expanded="false">
+          <i class="bi bi-stars me-2"></i>How can I upgrade my package?
+        </button>
+      </h2>
+      <div id="collapseIndividual2" class="accordion-collapse collapse" data-bs-parent="#helpAccordion">
+        <div class="accordion-body">
+          Navigate to the “My Package” section from your dashboard and click on “Upgrade Plan”.
+        </div>
+      </div>
+    </div>
+
+    <!-- Company Admins -->
+    <div class="accordion-item">
+      <h2 class="accordion-header" id="headingCompany1">
+        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseCompany1" aria-expanded="false">
+          <i class="bi bi-person-plus me-2"></i>How do I add employees to my company?
+        </button>
+      </h2>
+      <div id="collapseCompany1" class="accordion-collapse collapse" data-bs-parent="#helpAccordion">
+        <div class="accordion-body">
+          Go to “Employee Management” in your dashboard, click “Add Employee”, and fill in their details.
+        </div>
+      </div>
+    </div>
+
+    <div class="accordion-item">
+      <h2 class="accordion-header" id="headingCompany2">
+        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseCompany2" aria-expanded="false">
+          <i class="bi bi-share-fill me-2"></i>Can I share documents with all employees?
+        </button>
+      </h2>
+      <div id="collapseCompany2" class="accordion-collapse collapse" data-bs-parent="#helpAccordion">
+        <div class="accordion-body">
+          Yes. You can share documents company-wide by selecting “Share with all employees” in the sharing dialog.
+        </div>
+      </div>
+    </div>
+
+    <!-- Employees -->
+    <div class="accordion-item">
+      <h2 class="accordion-header" id="headingEmployee1">
+        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseEmployee1" aria-expanded="false">
+          <i class="bi bi-folder2-open me-2"></i>Where can I see my documents?
+        </button>
+      </h2>
+      <div id="collapseEmployee1" class="accordion-collapse collapse" data-bs-parent="#helpAccordion">
+        <div class="accordion-body">
+          Go to your dashboard and click on “My Documents”. You can view, filter, and download documents from there.
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

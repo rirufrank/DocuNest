@@ -26,6 +26,7 @@ urlpatterns = [
     path('', include('mainapp.urls')),
     path('accounts/', include('accounts.urls', namespace= 'accounts')),
     path('packages/', include('packages.urls', namespace='packages')),
+    path('resources/', include('resources.urls', namespace='resources')),
     path('documents/', include('documents.urls')),
 ]
 if settings.DEBUG:

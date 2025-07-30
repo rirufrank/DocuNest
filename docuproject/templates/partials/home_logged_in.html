@@ -1,11 +1,35 @@
   <div class="main-content">
+  {% if messages %}
+  <div class="container mt-3">
+    {% for message in messages %}
+      <div class="alert alert-{{ message.tags }} d-flex align-items-center justify-content-between shadow-sm border-0 rounded-3 py-2 px-4 mb-3 docunest-alert fade show" role="alert">
+        <div class="d-flex align-items-center">
+          <i class="bi bi-info-circle-fill me-2"></i>
+          <span>{{ message }}</span>
+        </div>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+    {% endfor %}
+  </div>
+{% endif %}
+
     <div class="container py-5">
         
       <div class="text-center mb-4">
         <h1 class="display-5" style="color: #02c3bd;">Welcome to DocuNest</h1>
         <p class="lead" style="color: #4f6d7a;">Securely manage your documents and organization</p>
       </div>
-      
+      <div class="container d-flex justify-content-end m-2">
+          <div class="card shadow-sm border-0" style="background-color: #e3f8ff;">
+            <div class="card-body d-flex gap-2 p-2">
+              {% if request.user.user_type != 'employee' %}
+                <a href="{% url 'accounts:dashboard' %}" class="btn btn-sm btn-outline-dark" style="background-color: #02c3bd; color: #0a100d;">Dashboard</a>
+              {% endif %}
+              <a href="{% url 'accounts:logout' %}" class="btn btn-sm btn-outline-dark" style="background-color:#0a100d; color: #02c3bd;">Logout</a>
+            </div>
+          </div>
+
+        </div>
       <div class="row g-4">
         <div class="col-md-4">
           <div class="card shadow-sm border-0" style="background-color: #e3f8ff;">
@@ -20,17 +44,12 @@
         <div class="col-md-4">
           <div class="card shadow-sm border-0" style="background-color: #9cffff;">
             <div class="card-body text-center">
-              <h5 class="card-title">My Profile</h5>
-              <p class="card-text">Update your personal or company details.</p>
-              <a href="#" class="btn btn-outline-dark">View Profile</a>
-              <header class="py-3" style="background-color: #9cffff;">
-                <div class="container d-fleSx justify-content-between align-items-center">
-                    <div >
-                        <a href="{% url 'accounts:logout' %}" class="btn btn-sm btn-outline-dark" style="background-color:#0a100d ; color: #02c3bd;">Logout</a>
-                    </div>
-                </div>
-                </header>
+                <h5 class="card-title">My Profile</h5>
+                <p class="card-text">Update your personal or company details.</p>
+                <a href="{% url 'accounts:profile_redirect' %}" class="btn btn-outline-dark">View Profile</a>
+                         
             </div>
+
           </div>
         </div>
 
@@ -39,7 +58,7 @@
             <div class="card-body text-center">
               <h5 class="card-title">Package Status</h5>
               <p class="card-text">Manage or upgrade your subscription package.</p>
-              <a href="#" class="btn btn-outline-dark">Manage Package</a>
+              <a href="{%url 'packages:pricing'%}" class="btn btn-outline-dark">Manage Package</a>
             </div>
           </div>
         </div>

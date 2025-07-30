@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Document Details</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- Bootstrap CSS CDN -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+  <style>
+    body {
+      background-color: #f8f9fa;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+    .card {
+      border-radius: 16px;
+    }
+    .card-header {
+      border-top-left-radius: 16px;
+      border-top-right-radius: 16px;
+    }
+    header {
+      background-color: #343a40;
+      color: white;
+      padding: 1rem;
+      text-align: center;
+      font-size: 1.25rem;
+    }
+    footer {
+      margin-top: auto;
+      background-color: #343a40;
+      color: #ccc;
+      padding: 1rem;
+      text-align: center;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  DocuNest 
+</header>
+
+<div class="container mt-4 mb-4">
+  <div class="card shadow">
+    <div class="card-header bg-dark text-white">
+      <h5 class="mb-0">📄 Document Details</h5>
+    </div>
+    <div class="card-body">
+
+      {% if document.owner == request.user %}
+        <form method="POST" action="{% url 'documents:toggle_favorite' document.id %}" class="d-inline">
+          {% csrf_token %}
+          {% if document.is_favorite %}
+            <button type="submit" class="btn btn-warning btn-sm">
+              ★ Favorited
+            </button>
+          {% else %}
+            <button type="submit" class="btn btn-outline-warning btn-sm">
+              ☆ Add to Favorites
+            </button>
+          {% endif %}
+        </form>
+      {% endif %}
+
+      <h4 class="fw-bold mt-3">{{ document.title }}</h4>
+
+      <p><strong>Type:</strong> {{ document.file.name|slice:"-4:"|upper }}</p>
+      <p><strong>Uploaded By:</strong> {{ document.owner.employeeprofile.full_name }}</p>
+      <p><strong>Department:</strong> {{ document.owner.employeeprofile.department }}</p>
+      <p><strong>Uploaded At:</strong> {{ document.uploaded_at|date:"F j, Y, g:i a" }}</p>
+      <p><strong>Size:</strong> {{ document.size|filesizeformat }}</p>
+      <p><strong>Description:</strong> {{ document.description|default:"No description provided." }}</p>
+
+      {% if document.shared_with.exists %}
+        <p><strong>Shared With:</strong>
+          {% for user in document.shared_with.all %}
+            {{ user.email }}{% if not forloop.last %}, {% endif %}
+          {% endfor %}
+        </p>
+      {% else %}
+        <p><strong>Shared With:</strong> Not shared</p>
+      {% endif %}
+
+      <div class="mt-4">
+        <a href="{{ document.file.url }}" class="btn btn-outline-success btn-sm" target="_blank">View Document</a>
+        <a href="{% url 'documents:download_document' document.id %}" class="btn btn-primary btn-sm">Download</a>
+        <a href="{% url 'documents:documentredirect' %}" class="btn btn-secondary btn-sm">Back</a>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<footer>
+  &copy; {{ now|date:"Y" }} DocuNest. All rights reserved.
+</footer>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+</html>

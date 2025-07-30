@@ -5,6 +5,7 @@ from django.db import models
 from django.contrib.auth.forms import UserCreationForm
 from django.forms.utils import ErrorList
 from .models import CustomUser, IndividualProfile, CompanyProfile, EmployeeProfile, Department
+from django.forms.widgets import ClearableFileInput
 
 class CustomFormMixin:
     def __init__(self, *args, **kwargs):
@@ -82,7 +83,6 @@ class EmployeeRegistrationForm(UserCreationForm):
     gender = forms.ChoiceField(choices=[('male', 'Male'), ('female', 'Female')], required=False)
     profile_picture = forms.ImageField(required=False)
     employee_code = forms.CharField(max_length=50, required=False)
-    status = forms.ChoiceField(choices=[('active', 'Active'), ('suspended', 'Suspended')])
     company = forms.ModelChoiceField(queryset=CustomUser.objects.filter(user_type='company'))
 
     class Meta:
@@ -103,8 +103,6 @@ class EmployeeRegistrationForm(UserCreationForm):
                 gender=self.cleaned_data.get('gender'),
                 profile_picture=self.cleaned_data.get('profile_picture'),
                 employee_code=self.cleaned_data.get('employee_code'),
-                status=self.cleaned_data['status']
-                # department is now omitted
             )
         return user
 
@@ -130,3 +128,27 @@ class EmployeeProfileForm(forms.ModelForm):
     class Meta:
         model = EmployeeProfile
         fields = ['full_name', 'phone', 'employee_code', 'department']
+
+class CompanyProfileForm(forms.ModelForm):
+    class Meta:
+        model = CompanyProfile
+        fields = [
+            'company_name',
+            'company_phone',
+            'company_website',
+            'admin_full_name',
+            'admin_phone',
+            'address',
+        ]
+        exclude = ['company_logo']
+        
+class CompanyLogoForm(forms.ModelForm):
+    class Meta:
+        model = CompanyProfile
+        fields = ['company_logo']
+        widgets = {
+            'company_logo': forms.FileInput(attrs={
+                'class': 'form-control',
+                'accept': 'image/*'
+            })
+        }

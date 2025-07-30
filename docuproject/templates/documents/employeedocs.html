@@ -18,7 +18,6 @@
     <style>
         body {
             font-family: 'Outfit', sans-serif;
-            background: linear-gradient(to right, #0a100d, #4f6d7a);
             color: white;
         }
 
@@ -57,9 +56,7 @@
 <div class="container mt-5 text-white">
   <div class="d-flex justify-content-between align-items-center mb-4">
     <h2 class="fw-bold text-black">🗂️ My Documents</h2>
-    <a href="#" class="btn btn-sm btn-outline-light" data-bs-toggle="tooltip" title="Get Help">
-      <i class="bi bi-question-circle"></i>
-    </a>
+    <a href="{% url 'documents:upload_document'%}" class="btn btn-primary"><i class="bi bi-cloud-arrow-up icon "></i><span class="label"> Upload</span></a>
   </div>
 
     <form method="get" class="row gy-2 gx-3 align-items-center mb-4">
@@ -78,10 +75,6 @@
         </select>
       </div>
   
-      <!-- Department -->
-      <div class="col-md-2">
-        <input type="text" name="department" class="form-control" placeholder="Department" value="{{ department }}">
-      </div>
   
       <!-- Date Range -->
       <div class="col-md-2">
@@ -102,6 +95,12 @@
           <option value="oldest" {% if sort_by == "oldest" %}selected{% endif %}>Oldest First</option>
           <option value="size" {% if sort_by == "size" %}selected{% endif %}>Largest First</option>
         </select>
+      </div>
+
+      <!--Favourite-->
+      <div class="col-md-3 form-check">
+        <input class="form-check-input" type="checkbox" value="1" name="favorites" id="favcheck" {% if favorites == "1" %}checked{% endif %}>
+        <label class="form-check-label text-dark" for="favcheck">Favorites only</label>
       </div>
   
       <!-- Buttons -->

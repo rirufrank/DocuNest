@@ -6,9 +6,14 @@ from datetime import date, timedelta
 from django.utils import timezone
 from django.http import HttpResponseNotAllowed
 
+@login_required
 def pricing_view(request):
+    if request.user.user_type == 'employee':
+        messages.info(request, "Employees can't purchase packages. Contact your company administrator.")
+
     individual_packages = Package.objects.filter(user_type='individual')
     company_packages = Package.objects.filter(user_type='company')
+    
     return render(request, 'packages/pricing.html', {
         'individual_packages': individual_packages,
         'company_packages': company_packages,
@@ -27,7 +32,7 @@ def package_checkout(request, package_id):
     user = request.user
     if hasattr(user, 'userpackage') and user.userpackage.is_active:
         messages.info(request, "You already have an active package.")
-        return redirect('accounts:dashboard') 
+        return redirect('packages:pricing') 
 
     package = get_object_or_404(Package, id=package_id)
     return render(request, 'packages/checkout.html', {'package': package})

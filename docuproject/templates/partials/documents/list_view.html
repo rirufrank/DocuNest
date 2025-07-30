@@ -9,6 +9,7 @@
         <!-- File Type Icon -->
         <div class="me-3 text-center">
           <i class="bi {{ doc.get_icon_class }} fs-3 text-primary"></i>
+          
         </div>
 
         <!-- Document Info -->
@@ -18,13 +19,37 @@
             <i class="bi bi-calendar-event"></i> {{ doc.uploaded_at|date:"M d, Y" }} &nbsp;|&nbsp;
             <i class="bi bi-hdd"></i> {{ doc.size_in_mb }} &nbsp;|&nbsp;
             <i class="bi bi-files"></i> {{ doc.categorize_file_type}}
+            <i class="bi {% if doc.is_favorite %}bi-star-fill text-warning{% endif %} fs-5 m-1"></i>
+            
           </p>
+          
         </div>
+         
+        <!-- Action Buttons -->
+        <div class="position-absolute bottom-0 end-0 m-2 d-flex gap-1">
+          {% if doc.is_company_wide %}
+              <i class="bi bi-person-exclamation"></i>
+          {% endif %}
+          <!-- View document-->
+          <a href="{% url 'documents:view_document' doc.id %}" target="_blank" class="btn btn-sm btn-outline-primary" title="View Document">
+            <i class="bi bi-eye"></i>
+          </a>
+          
+          <!-- View document details-->
+          <a href="{% url 'documents:document_detail' doc.id %}"  class="btn btn-sm btn-outline-primary" title="View Details">
+            <i class="bi-info-circle"></i>
+          </a>
 
-        <!-- Actions -->
-        <div class="ms-3 text-nowrap">
-          <a href="#" class="btn btn-sm btn-outline-primary me-1">View</a>
-          <a href="#" class="btn btn-sm btn-outline-success">Download</a>
+          <!-- Download -->
+          <a href="{% url 'documents:download_document' doc.id %}" class="btn btn-sm btn-outline-success" title="Download">
+            <i class="bi bi-download"></i>
+          </a>
+        
+          {% if not doc.is_company_wide %}
+            <a href="{% url 'documents:delete_document' doc.id %}" class="btn btn-sm btn-outline-danger" title="Delete">
+              <i class="bi bi-trash"></i>
+            </a>
+          {%endif%}
         </div>
 
       </div>

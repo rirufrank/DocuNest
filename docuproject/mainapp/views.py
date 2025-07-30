@@ -8,8 +8,8 @@ def preview_template(request, template_name):
     except:
         return render(request, "dev/not_found.html", {"template": template_name})
 
-def test_view(request):
-    return render(request, 'welcome.html')
+def services(request):
+    return render(request, 'services.html')
 
 def homepage(request):
     return render(request, 'homepage.html')
@@ -22,3 +22,6 @@ def contact(request):
 
 def welcome(request):
     return render(request, 'welcome.html')
+
+def help_home(request):
+    return render(request, 'helpcenter/main.html')

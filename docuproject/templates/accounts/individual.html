@@ -83,98 +83,102 @@
 
     </style>
 </head>
-<body>
+<body style = "font-family: 'Outfit', sans-serif;">
 
 
 <div class="d-flex">
+
+
     <!-- Sidebar -->
     <div id="sidebar" class="sidebar collapsed">
         <div class="toggle-btn" onclick="toggleSidebar()">
           <span class="icon">☰</span>
         </div>
-            <a href="#"><i class="bi bi-house-door icon"></i><span class="label"> Dashboard</span></a>
-            <a href="#"><i class="bi bi-folder icon"></i><span class="label"> My Documents</span></a>
-            <a href="#"><i class="bi bi-cloud-arrow-up icon"></i><span class="label"> Upload</span></a>
+            <a href="{% url 'documents:documentredirect'%}"><i class="bi bi-folder icon"></i><span class="label"> My Documents</span></a>
+            <a href="{% url 'documents:upload_document'%}"><i class="bi bi-cloud-arrow-up icon"></i><span class="label"> Upload</span></a>
             <a href="#"><i class="bi bi-share icon"></i><span class="label"> Shared with Me</span></a>
             <a href="#"><i class="bi bi-star icon"></i><span class="label"> Favorites</span></a>
-            <a href="#"><i class="bi bi-person-circle icon"></i><span class="label"> Profile</span></a>
-            <a href="#"><i class="bi bi-question-circle icon"></i><span class="label"> Help</span></a>
-            <a href="#"><i class="bi bi-box-arrow-right icon"></i><span class="label"> Logout</span></a>
+            <a href="{% url 'accounts:profile_redirect'%}"><i class="bi bi-person-circle icon"></i><span class="label"> Profile</span></a>
+            <a href="{% url 'help'%}"><i class="bi bi-question-circle icon"></i><span class="label"> Help</span></a>
+            <a href="{% url 'accounts:logout'%}"><i class="bi bi-box-arrow-right icon"></i><span class="label"> Logout</span></a>
     </div>
 
     <div class= "flex-grow-1 p-4" id= "page-content">
         
         <div class"container-fluid">
               {%include "partials/navbar.html"%}
-                <header class="py-3" style="background-color: #e3f8ff;">
-                  <div class="container d-flex justify-content-between align-items-center">
-                    <div class="container-fluid d-flex flex-wrap justify-content-center align-items-center text-center my-3">
-                      <a href="#" class="m-2 btn btn-sm me-2" style="background-color: #02c3bd; color: #0a100d;">Account Settings</a>
-                      <a href="#" class="m-2 btn btn-sm me-2" style="background-color: #02c3bd; color: #0a100d;">Homepage</a>
-                      <a href="#" class="m-2 btn btn-sm me-2" style="background-color: #02c3bd; color: #0a100d;">My Package</a>
-                      <a href="#" class="m-2 btn btn-sm me-2" style="background-color: #02c3bd; color: #0a100d;">Check Out other packages</a>
-                      <a href="#" class="m-2 btn btn-sm btn-outline-light" style="background-color: #0a100d;">Logout</a>
-                    </div>
-
-                  </div>
-                </header>
-                {% if messages %}
+              {% if messages %}
+                <div class="container mt-3">
                   {% for message in messages %}
-                    <script>
-                      toastr.success("{{ message }}");
-                    </script>
+                    <div class="alert alert-{{ message.tags }} d-flex align-items-center justify-content-between shadow-sm border-0 rounded-3 py-2 px-4 mb-3 docunest-alert fade show" role="alert">
+                      <div class="d-flex align-items-center">
+                        <i class="bi bi-info-circle-fill me-2"></i>
+                        <span>{{ message }}</span>
+                      </div>
+                      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
                   {% endfor %}
-                {% endif %}
+                </div>
+              {% endif %}
         </div>
         <div class="container-fluid m-3">
             <!-- 🟩 Top: Welcome & Profile -->
             <div class="d-flex justify-content-between align-items-center mb-4">
               <div>
-                <h2 class="text-dark">Welcome, {{ request.user.get_full_name|default:request.user.email }}</h2>
+                <h2 class="text-dark">Welcome, {{ request.user.display_name }}</h2>
                 <p class="text-muted">Your personal document space on DocuNest</p>
               </div>
               <div>
-                <img src="{{ profile_picture_url }}" class="rounded-circle" alt="Profile" width="60" height="60">
+                <img src="{{ profile_picture_url }}" class="rounded-circle border shadow-sm" alt="Profile" width="60" height="60">
               </div>
             </div>
 
-            <!--Recent Uploads Section-->
-            <div class="table-responsive shadow rounded bg-white p-3">
-                <div class="card-header bg-white fw-bold">Recent Uploads</div>
-              <table class="table table-hover align-middle">
-                <thead class="table-light">
-                  <tr>
-                    <th>Title</th>
-                    <th>Type</th>
-                    <th>Size</th>
-                    <th>Uploaded</th>
-                    <th>Actions</th>
+            <!-- Recent Uploads Section -->
+            <div class="table-responsive shadow rounded-4 bg-white p-4 mb-4">
+              <div class="d-flex justify-content-between align-items-center mb-3">
+                <h5 class="fw-bold mb-0 text-dark">📄 Recent Uploads</h5>
+                <a href="{% url 'documents:documentredirect' %}" class="btn btn-sm px-3 py-2 rounded-pill" style="background-color:#02c3bd; color:#0a100d;">
+                  View All
+                </a>
+              </div>
+            
+              <table class="table align-middle table-borderless table-hover mb-0">
+                <thead class="table-light rounded-top">
+                  <tr class="align-middle">
+                    <th class="text-secondary">📁 Title</th>
+                    <th class="text-secondary">🗂️ Type</th>
+                    <th class="text-secondary">📦 Size</th>
+                    <th class="text-secondary">⏱ Uploaded</th>
+                    <th class="text-secondary text-center">⚙️ Actions</th>
                   </tr>
                 </thead>
                 <tbody>
                   {% for doc in documents %}
-                  <tr>
-                    <td>{{ doc.title }}</td>
-                    <td>{{ doc.file_type }}</td>
-                    <td>{{ doc.file.size|filesizeformat }}</td>
-                    <td>{{ doc.uploaded_at|date:"M d, Y" }}</td>
+                  <tr class="align-middle border-bottom">
+                    <td class="fw-semibold text-dark">{{ doc.title }}</td>
                     <td>
-                      <a href="{% url 'documents:download_document' doc.pk %}" class="btn btn-sm btn-outline-primary">
+                      <span class="badge rounded-pill bg-info-subtle text-dark text-capitalize">{{ doc.file_type }}</span>
+                    </td>
+                    <td class="text-muted">{{ doc.file.size|filesizeformat }}</td>
+                    <td class="text-muted">{{ doc.uploaded_at|date:"M d, Y" }}</td>
+                    <td class="text-center">
+                      <a href="{% url 'documents:download_document' doc.pk %}" class="btn btn-sm btn-outline-primary rounded-pill me-2" title="Download">
                         <i class="bi bi-download"></i>
                       </a>
-                      <a href="{% url 'documents:delete_document' doc.pk %}" class="btn btn-sm btn-outline-danger">
+                      <a href="{% url 'documents:delete_document' doc.pk %}" class="btn btn-sm btn-outline-danger rounded-pill" title="Delete">
                         <i class="bi bi-trash"></i>
                       </a>
                     </td>
                   </tr>
                   {% empty %}
-                  <tr><td colspan="4">No documents uploaded yet.</td></tr>
+                  <tr>
+                    <td colspan="5" class="text-center text-muted py-4">No documents uploaded yet.</td>
+                  </tr>
                   {% endfor %}
                 </tbody>
               </table>
-              <a href="#" class="btn btn-outline-primary float-end" style= "background-color:#02c3bd; color: #0a100d; ">View All Documents</a>
-
             </div>
+
         
             <!-- 🟩 1. Quick Stats -->
             <div class="row g-4 mb-4 mt-4">
@@ -215,40 +219,7 @@
               </div>
             </div>
         
-            <!-- 🟩 2. Recent Uploads Table -->
-            <div class="card mb-4 shadow-sm">
-              <div class="card-header bg-white fw-bold">Recent Uploads</div>
-              <div class="card-body table-responsive p-0">
-                <table class="table table-striped mb-0">
-                  <thead>
-                    <tr>
-                      <th>Filename</th>
-                      <th>Type</th>
-                      <th>Date</th>
-                      <th>Actions</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {% for doc in recent_documents %}
-                    <tr>
-                      <td>{{ doc.name }}</td>
-                      <td>{{ doc.file_type }}</td>
-                      <td>{{ doc.uploaded_at|date:"M d, Y" }}</td>
-                      <td>
-                        <a href="{% url 'view_document' doc.id %}" class="btn btn-sm btn-outline-primary">View</a>
-                        <a href="{% url 'delete_document' doc.id %}" class="btn btn-sm btn-outline-danger">Delete</a>
-                      </td>
-                    </tr>
-                    {% empty %}
-                    <tr>
-                      <td colspan="4" class="text-center text-muted">No documents uploaded recently.</td>
-                    </tr>
-                    {% endfor %}
-                  </tbody>
-                </table>
-              </div>
-            </div>
-        
+            
             <!-- 🟩 3. Suggested Actions -->
             <div class="row g-3 mb-4">
               <div class="col-md-8">
@@ -269,16 +240,10 @@
                                 {{ form.file_type.label_tag }} {{ form.file_type }}
                             </div>
                             <div class="col-md-4">
-                                {{ form.is_favorite.label_tag }} {{ form.is_favorite }}
+                                {{ form.is_favorite }}<strong> Favourite</strong> 
                             </div>
                             <div class="col-md-4">
-                                {% if messages %}
-                                    <script>
-                                        {% for message in messages %}
-                                            toastr.success("{{ message }}");
-                                        {% endfor %}
-                                    </script>
-                                {% endif %}
+                                {{ form.description.label_tag }} {{ form.description }}
                             </div>
                         </div>
                         <button type="submit" class="btn btn-primary mt-3">Upload Document</button>
@@ -305,112 +270,6 @@
                 {% endif %}
               </div>
             </div>
-        
-            <!-- 🟩 4. Search Bar with Filters -->
-            <form class="row g-2 align-items-center mb-4" method="get" action="#">
-              <div class="col-md-3">
-                <input type="text" class="form-control" name="q" placeholder="Search by filename...">
-              </div>
-              <div class="col-md-2">
-                <select name="file_type" class="form-select">
-                  <option value="">All Types</option>
-                  <option value="pdf">PDF</option>
-                  <option value="image">Image</option>
-                  <option value="doc">Word</option>
-                </select>
-              </div>
-              <div class="col-md-2">
-                <input type="date" name="start_date" class="form-control" placeholder="Start date">
-              </div>
-              <div class="col-md-2">
-                <input type="date" name="end_date" class="form-control" placeholder="End date">
-              </div>
-              <div class="col-md-2">
-                <button type="submit" class="btn btn-primary w-100"><i class="bi bi-search"></i> Search</button>
-              </div>
-            </form>
-        
-            <!-- 🟩 5. Analytics Snapshot (Charts Placeholder) -->
-            <div class="row g-4">
-              <div class="col-md-6">
-                <div class="card shadow-sm">
-                  <div class="card-body">
-                    <h6 class="fw-bold">File Type Distribution</h6>
-                    <canvas id="fileTypeChart"></canvas>
-                  </div>
-                </div>
-              </div>
-              <div class="col-md-6">
-                <div class="card shadow-sm">
-                  <div class="card-body">
-                    <h6 class="fw-bold">Activity Over Time</h6>
-                    <canvas id="activityChart"></canvas>
-                  </div>
-                </div>
-              </div>
-            </div>
-        </div>
-
-<!-- 🟩 Floating Notifications Button -->
-<button class="btn btn-info position-fixed bottom-0 end-0 m-4 rounded-circle" title="View Notifications"
-        onclick="toastr.info('No new notifications')">
-  <i class="bi bi-bell-fill fs-4"></i>
-</button>
-
-<!-- Toastr Notifications -->
-<script>
-  toastr.options = {
-    "positionClass": "toast-bottom-right",
-    "timeOut": "4000"
-  };
-  {% if messages %}
-    {% for message in messages %}
-      toastr["{{ message.tags }}"]("{{ message }}");
-    {% endfor %}
-  {% endif %}
-</script>
-
-<!-- Chart.js -->
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script>
-  const fileTypeCtx = document.getElementById('fileTypeChart');
-  const activityCtx = document.getElementById('activityChart');
-
-  new Chart(fileTypeCtx, {
-    type: 'doughnut',
-    data: {
-      labels: {{ chart_labels|safe }},
-      datasets: [{
-        data: {{ chart_data|safe }},
-        backgroundColor: ['#02c3bd', '#4f6d7a', '#9cffff', '#e3f8ff']
-      }]
-    }
-  });
-
-  new Chart(activityCtx, {
-    type: 'line',
-    data: {
-      labels: {{ activity_labels|safe }},
-      datasets: [{
-        label: 'Uploads',
-        data: {{ activity_data|safe }},
-        borderColor: '#02c3bd',
-        tension: 0.3
-      }]
-    }
-  });
-</script>
-            <!-- Toast Example (Toastr) -->
-            <script>
-              toastr.options = {
-                "positionClass": "toast-bottom-right",
-              }
-              {% if messages %}
-                {% for message in messages %}
-                  toastr["{{ message.tags }}"]("{{ message }}");
-                {% endfor %}
-              {% endif %}
-            </script>
         </div>
       </div>
     </div>

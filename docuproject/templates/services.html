@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+{%include 'partials/head.html'%}
+<style>
+    .text-accent {
+  color: #02c3bd;
+}
+
+</style>
+<body style = "font-family: 'Outfit', sans-serif;">
+    {%include 'partials/header.html'%}
+<div class="container py-5">
+  <div class="text-center mb-5">
+    <h1 class="text-accent">Our Services</h1>
+    <p class="fs-5">DocuNest is your secure, all-in-one document management solution for individuals and companies.</p>
+  </div>
+
+  <div class="row g-4">
+    <div class="col-md-6">
+      <div class="p-4 rounded-4 shadow-sm h-100 bg-white">
+        <h4 class="text-accent">For Individuals</h4>
+        <p>
+          Easily upload, organize, and access your personal documents from anywhere. 
+          Share securely, manage storage, and enjoy peace of mind with our encrypted cloud storage.
+        </p>
+      </div>
+    </div>
+
+    <div class="col-md-6">
+      <div class="p-4 rounded-4 shadow-sm h-100 bg-white">
+        <h4 class="text-accent">For Companies</h4>
+        <p>
+          Manage departmental documents, control access with employee accounts, track activity logs, and ensure secure, compliant storage. 
+          Ideal for growing teams and document-heavy industries.
+        </p>
+      </div>
+    </div>
+
+    <div class="col-md-6">
+      <div class="p-4 rounded-4 shadow-sm h-100 bg-white">
+        <h4 class="text-accent">Secure Document Sharing</h4>
+        <p>
+          Share documents with read-only or password-protected access. Monitor activity and revoke access anytime.
+        </p>
+      </div>
+    </div>
+
+    <div class="col-md-6">
+      <div class="p-4 rounded-4 shadow-sm h-100 bg-white">
+        <h4 class="text-accent">Custom Packages</h4>
+        <p>
+          Choose a plan that fits your needs—individual or company. Scale as you grow and only pay for what you use.
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <div class="text-center mt-5">
+    <a href="{% url 'packages:pricing' %}" class="btn text-white fw-bold px-4 py-2" style="background-color: #02c3bd;">
+      View Pricing Plans
+    </a>
+  </div>
+</div>
+{%include 'partials/footer.html'%}
+</body>
+</html>

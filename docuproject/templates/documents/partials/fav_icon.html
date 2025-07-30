@@ -1,0 +1,13 @@
+<button 
+  hx-post="{% url 'documents:toggle_favorite' doc.id %}" 
+  hx-swap="outerHTML" 
+  hx-trigger="click" 
+  hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}' 
+  
+  class="star-btn btn ">
+  {% if doc.is_favorite %}
+    <i class="bi bi-star-fill text-warning"></i>
+  {% else %}
+    <i class="bi bi-star"></i>
+  {% endif %}
+</button>

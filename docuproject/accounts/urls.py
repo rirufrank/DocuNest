@@ -10,7 +10,6 @@ urlpatterns = [
     path('dashboard/individual/', views.individual_dashboard, name='individual_dashboard'),
     path('dashboard/company/', views.company_dashboard, name='company_dashboard'),
     path('dashboard/employee/', views.employee_dashboard, name='employee_dashboard'),
-    path('dashboard/superadmin/', views.superadmin_dashboard, name='superadmin_dashboard'),
     path('logout/', views.user_logout, name = 'logout'),
     path('dashboard/company/departments/', views.manage_departments, name='manage_departments'),
     path('dashboard/company/departments/create/', views.create_department, name='create_department'),
@@ -22,6 +21,11 @@ urlpatterns = [
     path('dashboard/company/employees/<int:employee_id>/toggle/', views.toggle_employee_status, name='toggle_employee_status'),
     path('dashboard/company/employees/<int:employee_id>/delete/', views.delete_employee, name='delete_employee'),
     path('dashboard/company/employees/<int:employee_id>/view/', views.view_employee_detail, name='view_employee_detail'),
+    path('profile/', views.profile_redirect, name='profile_redirect'),
+    path('profile/employee/', views.employee_profile, name='employee_profile'),
+    path('profile/individual/', views.individual_profile, name='individual_profile'),
+    path('profile/company/', views.company_profile, name='company_profile'),
+    path("profile/company/logo/", views.update_company_logo, name="update_company_logo"),
 
-    
+
 ]

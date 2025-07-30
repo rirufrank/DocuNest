@@ -65,9 +65,7 @@
     <div class="container mt-5 text-white">
       <div class="d-flex justify-content-between align-items-center mb-4">
         <h2 class="fw-bold text-black">📄 Employee Documents</h2>
-        <a href="#" class="btn btn-sm btn-outline-light" data-bs-toggle="tooltip" title="Get Help">
-          <i class="bi bi-question-circle"></i>
-        </a>
+        <a href="{% url 'documents:upload_document'%}" class="btn btn-primary"><i class="bi bi-cloud-arrow-up icon "></i><span class="label"> Upload</span></a>
       </div>
 
       <!-- Filters -->
@@ -87,7 +85,8 @@
         </div>
         <div class="col-md-3">
           <select name="department" class="form-select">
-            <option value="">All Departments</option>
+            <option value="all" {% if department_filter == "all" %}selected{% endif %}>All Departments</option>
+            <option value="none" {% if department_filter == "none" %}selected{% endif %}>No Department</option>
             {% for dept in departments %}
               <option value="{{ dept }}" {% if department_filter == dept %}selected{% endif %}>{{ dept }}</option>
             {% endfor %}
@@ -117,51 +116,80 @@
         <!-- Container for both views -->
     <div class="m-2">
         <div id="gridView" class="row g-3">
-            <!-- GRID VIEW -->
-            <div class="container">
-              <div class="row g-3"> 
-                {% for doc in documents %}
-                    <div class="col-md-3 col-sm-6">
-                      <div class="card h-100 shadow-sm border-0">
-                        <div class="card-body d-flex flex-column">
-                          <!-- Dynamic File Type Icon -->
-                          <div class="mb-3 text-center">
-                            <i class="bi {{doc.get_icon_class}} fs-1 text-primary"></i>
-                          </div>
-                          <!-- Document Title -->
-                          <h6 class="card-title fw-bold text-truncate text-dark" title="{{ doc.title }}">{{ doc.title }}</h6>
-                      
-                          <!-- Uploader Name & Department -->
-                          <p class="mb-1 small text-muted">
-                            <i class="bi bi-person-circle"></i>
-                            {{ doc.owner.employeeprofile.full_name }}
-                          </p>
-                          <p class="mb-2 small text-muted">
-                            <i class="bi bi-diagram-3"></i>
-                            Dept: {{ doc.owner.employeeprofile.department}}
-                          </p>
-                      
-                          <!-- Upload Date & Size -->
-                          <p class="small text-black mb-1">
-                            <i class="bi bi-calendar-event"></i>
-                            {{ doc.uploaded_at|date:"M d, Y" }}
-                          </p>
-                          <p class="small text-muted mb-3">
-                            <i class="bi bi-hdd"></i> {{ doc.size_in_mb }}
-                          </p>
-                      
-                          <!-- Optional Actions -->
-                          <div class="mt-auto text-center">
-                            <a href="#" class="btn btn-sm btn-outline-primary">View</a>
-                          </div>
-                      
-                        </div>
+          <!-- GRID VIEW -->
+          <div class="container">
+            <div class="row g-3"> 
+              {% for doc in page_obj %}
+                <div class="col-md-3 col-sm-6">
+                  <div class="card h-100 shadow-sm border-0">
+                    <div class="card-body d-flex flex-column">
+                      <!-- Dynamic File Type Icon -->
+                      <div class="mb-3 text-center">
+                        <i class="bi {{ doc.get_icon_class }} fs-1 text-primary"></i>
                       </div>
+                    
+                      <!-- Document Title -->
+                      <h6 class="card-title fw-bold text-truncate text-dark" title="{{ doc.title }}">
+                        {{ doc.title }}
+                      </h6>
+                    
+                      <!-- Uploader Name & Department -->
+                      <p class="mb-1 small text-muted">
+                        <i class="bi bi-person-circle"></i>
+                        {% if doc.owner.user_type == 'employee' %}
+                          {{ doc.owner.employeeprofile.full_name }}
+                        {% elif doc.owner.user_type == 'company' %}
+                          <strong class="text-uppercase text-primary">Admin Upload</strong>
+                        {% else %}
+                          {{ doc.owner.email }}
+                        {% endif %}
+                      </p>
+
+                      <p class="mb-2 small text-muted">
+                        <i class="bi bi-diagram-3"></i>
+                        {% if doc.owner.user_type == 'employee' and doc.owner.employeeprofile.department %}
+                          Dept: {{ doc.owner.employeeprofile.department.name }}
+                        {% elif doc.owner.user_type == 'company' %}
+                          <strong class="text-uppercase text-danger">--</strong>
+                        {% else %}
+                          <em>No department</em>
+                        {% endif %}
+                      </p>
+                    
+                      <!-- Upload Date & Size -->
+                      <p class="small text-black mb-1">
+                        <i class="bi bi-calendar-event"></i>
+                        {{ doc.uploaded_at|date:"M d, Y" }}
+                      </p>
+                      <p class="small text-muted mb-3">
+                        <i class="bi bi-hdd"></i> {{ doc.size_in_mb }}
+                      </p>
+                    
+                      <!-- Action Icons Row -->
+                      <div class="mt-auto text-center">
+                        <a href="{% url 'documents:document_detail' doc.id %}" class="btn btn-sm btn-outline-dark me-1" title="Details">
+                          <i class="bi bi-info-circle"></i>
+                        </a>
+                        <a href="{% url 'documents:view_document' doc.id %}" class="btn btn-sm btn-outline-primary me-1" title="View Document">
+                          <i class="bi bi-eye"></i>
+                        </a>
+                        <a href="{% url 'documents:download_document' doc.id %}" class="btn btn-sm btn-outline-success" title="Download">
+                          <i class="bi bi-download"></i>
+                        </a>
+                        <a href="{% url 'documents:delete_document' doc.id %}" class="btn btn-sm btn-outline-danger" title="Download">
+                          <i class="bi bi-trash3-fill"></i>
+                        </a>
+                      </div>
+                    
                     </div>
-                {% empty %}
-                    <div class="col-12 text-center text-muted p-4">No documents found.</div>
-                {% endfor %}
-              </div>
+                  </div>
+                </div>
+              {% empty %}
+                <div class="col-12 text-center text-muted p-4">No documents found.</div>
+              {% endfor %}
+            </div>
+          </div>
+
             </div>
         </div>
         <div id="listView" class="d-none">
@@ -178,15 +206,33 @@
                 </tr>
               </thead>
               <tbody>
-                {% for doc in documents %}
+                {% for doc in page_obj %}
                 <tr>
                   <td>{{ doc.title }}</td>
-                  <td>{{ doc.owner.employeeprofile.full_name }}</td>
-                  <td>{{ doc.owner.employeeprofile.department }}</td>
+                  <td>
+                    {% if doc.owner.user_type == 'employee' %}
+                      {{ doc.owner.employeeprofile.full_name }}
+                    {% elif doc.owner.user_type == 'company' %}
+                      <strong class="text-primary">Admin Upload</strong>
+                    {% else %}
+                      <em>Unknown User</em>
+                    {% endif %}
+                  </td>
+
+                  <td>
+                    {% if doc.owner.user_type == 'employee' and doc.owner.employeeprofile.department %}
+                      {{ doc.owner.employeeprofile.department.name }}
+                    {% elif doc.owner.user_type == 'company' %}
+                      <strong class="text-danger">N/A</strong>
+                    {% else %}
+                      <em>No department</em>
+                    {% endif %}
+                  </td>
                   <td>{{ doc.uploaded_at|date:"Y-m-d H:i" }}</td>
                   <td>
-                    <a href="#" class="btn btn-sm btn-outline-primary" target="_blank">View</a>
-                    <a href="#" class="btn btn-sm btn-outline-secondary">Download</a>
+                    <a href="{% url 'documents:view_document' doc.id %}" class="btn btn-sm btn-outline-primary" target="_blank">View</a>
+                    <a href="{% url 'documents:download_document' doc.id %}" class="btn btn-sm btn-outline-secondary">Download</a>
+                    <a href="{% url 'documents:delete_document' doc.id %}" class="btn btn-sm btn-outline-danger">Delete</a>
                   </td>
                 </tr>
                 {% empty %}
@@ -200,31 +246,32 @@
         </div>
      </div>
       <!-- Pagination -->
-      {% if documents.has_other_pages %}
-      <nav class="mt-3">
-        <ul class="pagination justify-content-center">
-          {% if documents.has_previous %}
-            <li class="page-item">
-              <a class="page-link" href="?page={{ documents.previous_page_number }}">Previous</a>
-            </li>
-          {% endif %}
-
-          {% for num in documents.paginator.page_range %}
-            {% if documents.number == num %}
-              <li class="page-item active"><span class="page-link">{{ num }}</span></li>
-            {% elif num >= documents.number|add:"-2" and num <= documents.number|add:"2" %}
-              <li class="page-item"><a class="page-link" href="?page={{ num }}">{{ num }}</a></li>
+      {% if page_obj.has_other_pages %}
+        <nav class="mt-3">
+          <ul class="pagination justify-content-center">
+            {% if page_obj.has_previous %}
+              <li class="page-item">
+                <a class="page-link" href="?page={{ page_obj.previous_page_number }}">Previous</a>
+              </li>
             {% endif %}
-          {% endfor %}
-
-          {% if documents.has_next %}
-            <li class="page-item">
-              <a class="page-link" href="?page={{ documents.next_page_number }}">Next</a>
-            </li>
-          {% endif %}
-        </ul>
-      </nav>
+            
+            {% for num in page_obj.paginator.page_range %}
+              {% if page_obj.number == num %}
+                <li class="page-item active"><span class="page-link">{{ num }}</span></li>
+              {% elif num >= page_obj.number|add:"-2" and num <= page_obj.number|add:"2" %}
+                <li class="page-item"><a class="page-link" href="?page={{ num }}">{{ num }}</a></li>
+              {% endif %}
+            {% endfor %}
+            
+            {% if page_obj.has_next %}
+              <li class="page-item">
+                <a class="page-link" href="?page={{ page_obj.next_page_number }}">Next</a>
+              </li>
+            {% endif %}
+          </ul>
+        </nav>
       {% endif %}
+      
 
     </div>
 </div>

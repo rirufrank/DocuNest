@@ -19,15 +19,24 @@
         <li class="nav-item">
           <a class="nav-link" href="{% url 'contact' %}" style="color: #0a100d;">Contact</a>
         </li>
+        <li class="nav-item">
+          <a href="{% url 'help' %}" class="nav-link">
+            <i class="fa fa-question-circle"></i> Help
+          </a>
+        </li>
         {% if user.is_authenticated %}
-        <li class="nav-item">
-          <a class="nav-link" href="{% url 'accounts:dashboard' %}" style="color:#0a100d; ">Dashboard</a>
-        </li>
+          {% if user.user_type != 'employee' %}
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'accounts:dashboard' %}" style="color:#0a100d;">Dashboard</a>
+            </li>
+          {% endif %}
         {% else %}
-        <li class="nav-item">
-          <a class="nav-link btn btn-sm" href="{% url 'login' %}" style="color: white; background-color: #02c3bd;">Login</a>
-        </li>
+          <li class="nav-item">
+            <a class="nav-link btn btn-sm" href="{% url 'accounts:login' %}" style="color: white; background-color: #02c3bd;">Login</a>
+          </li>
         {% endif %}
+        
+        
       </ul>
     </div>
   </div>

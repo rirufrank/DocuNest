@@ -22,7 +22,7 @@
   }
 </style>
 
-<footer class="mt-auto py-5 text-light" style="background-color: #0a100d;">
+<footer class="mt-auto py-5 text-light footer" style="background-color: #0a100d;">
   <div class="container">
     <div class="row">
       <!-- Logo & About -->
@@ -37,9 +37,9 @@
       <div class="col-md-4 mb-4">
         <h5 class="text-uppercase" style="color: #02c3bd;">Resources</h5>
         <ul class="list-unstyled small">
-          <li><a href="#" class="footer-link">Privacy Policy</a></li>
-          <li><a href="#" class="footer-link">Terms of Service</a></li>
-          <li><a href="#" class="footer-link">Data Protection Policy</a></li>
+          <li><a href="{% url 'resources:privacy'%}" class="footer-link">Privacy Policy</a></li>
+          <li><a href="{% url 'resources:terms'%}" class="footer-link">Terms of Service</a></li>
+          <li><a href="{% url 'resources:data_protection'%}" class="footer-link">Data Protection Policy</a></li>
         </ul>
       </div>
 

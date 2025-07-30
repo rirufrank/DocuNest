@@ -40,14 +40,28 @@
     </style>
 
 </head>
-<body style="background: linear-gradient(to right, #0a100d, #4f6d7a);">
+<body style = "font-family: 'Outfit', sans-serif;background: linear-gradient(to right, #0a100d, #4f6d7a);">
     {%include 'partials/header.html'%}
+  
 <div class="d-flex align-items-center justify-content-center vh-100" style="background: linear-gradient(135deg, #0a100d, #4f6d7a);">
   <div class="card p-4 shadow-lg" style="max-width: 420px; width: 100%; border-radius: 1.5rem; animation: fadeSlideIn 0.6s ease-in-out;">
     <div class="text-center mb-4">
       <img src="{% static 'images/logoremovebg.ico' %}" alt="DocuNest" width="60">
       <h3 class="mt-3 text-brand fw-bold" style="color: #02c3bd;">Welcome Back</h3>
       <p class="text-muted">Login to your DocuNest account</p>
+      {% if messages %}
+        <div class="container mt-3">
+          {% for message in messages %}
+            <div class="alert alert-{{ message.tags }} d-flex align-items-center justify-content-between shadow-sm border-0 rounded-3 py-2 px-4 mb-3 docunest-alert fade show" role="alert">
+              <div class="d-flex align-items-center">
+                <i class="bi bi-info-circle-fill me-2"></i>
+                <span>{{ message }}</span>
+              </div>
+              <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+          {% endfor %}
+        </div>
+      {% endif %}
     </div>
     <form method="post" novalidate>
       {% csrf_token %}

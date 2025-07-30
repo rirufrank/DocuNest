@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+{%include 'partials/head.html'%}
+<style>
+    .text-accent {
+  color: #02c3bd;
+}
+</style>
+<body style = "font-family: 'Outfit', sans-serif; background-color: #e3f8ff; color: #0a100d; margin: 0;">
+{%include 'partials/header.html' %}
+  <div class="text-center mb-5 mt-3">
+      <h1 class="text-accent">Contact Us</h1>
+      <p class="fs-5">We’d love to hear from you. Reach out with any questions, feedback, or support needs.</p>
+    </div>
+
+    <div class="container mb-3" style="max-width: 700px;">
+      <div class="bg-white p-4 p-md-5 rounded-4 shadow-sm">
+        <form method="POST" action="" class="d-flex flex-column gap-4">
+          {% csrf_token %}
+
+          <div>
+            <label for="name" class="form-label fw-bold">Your Name</label>
+            <input type="text" class="form-control" id="name" name="name" required>
+          </div>
+
+          <div>
+            <label for="email" class="form-label fw-bold">Your Email</label>
+            <input type="email" class="form-control" id="email" name="email" required>
+          </div>
+
+          <div>
+            <label for="message" class="form-label fw-bold">Message</label>
+            <textarea class="form-control" id="message" name="message" rows="5" required></textarea>
+          </div>
+
+          <div>
+            <button type="submit" class="btn text-white fw-bold px-4 py-2"
+                    style="background-color: #02c3bd;">
+              Send Message
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+{%include 'partials/footer.html'%}
+</body>
+
+</html>

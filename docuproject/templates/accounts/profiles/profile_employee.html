@@ -1,0 +1,159 @@
+{% extends 'accounts/profiles/profilebase.html' %}
+
+{% block title %}Employee Profile{% endblock %}
+
+{% block extra_head %}
+<style>
+    .profile-card {
+        background-color: #e3f8ff;
+        color: var(--light);
+        border-left: 5px solid var(--aqua);
+        border-radius: 10px;
+    }
+
+    .profile-card .card-header {
+        background-color: var(--slate);
+        border-bottom: 1px solid var(--aqua);
+        border-top-left-radius: 10px;
+        border-top-right-radius: 10px;
+        padding: 1rem;
+    }
+
+    .profile-card .card-body {
+        padding: 1rem 1.25rem;
+        background-color: var(--dark-bg);
+    }
+
+    .profile-card p {
+        margin-bottom: 0.75rem;
+        font-size: 1rem;
+    }
+
+    .profile-card strong {
+        color: var(--mint);
+    }
+
+    .profile-pic {
+        width: 60px;
+        height: 60px;
+        object-fit: cover;
+        border-radius: 50%;
+        border: 2px solid var(--mint);
+    }
+
+    .form-section {
+        background-color: #e3f8ff;
+        padding: 1.5rem;
+        border-radius: 10px;
+        color: var(--light);
+    }
+
+    .form-section label {
+        font-weight: bold;
+        color: var(--mint);
+    }
+
+    .form-section input[type="text"],
+    .form-section input[type="file"] {
+        background-color: var(--light);
+        color: #000;
+    }
+
+    @media (max-width: 768px) {
+        .profile-pic {
+            width: 50px;
+            height: 50px;
+        }
+
+        .form-section {
+            margin-top: 1rem;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<h2 class="m-4">Hello, {{ profile.full_name }}</h2>
+
+<form method="POST" enctype="multipart/form-data">
+    {% csrf_token %}
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Profile Card -->
+            <div class="col-lg-6 mb-4">
+                <div class="card profile-card shadow-sm border-0">
+                    <div class="card-header d-flex align-items-center">
+                        {% if profile.profile_picture %}
+                            <img src="{{ profile.profile_picture.url }}" alt="Profile Picture" class="profile-pic me-3">
+                        {% endif %}
+                        <div>
+                            <h5 class="mb-0 text-dark">{{ profile.full_name }}</h5>
+                            <small class="text-dark">Employee Profile</small>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="row mb-2">
+                            <div class="col-5"><strong>Email:</strong></div>
+                            <div class="col-7">{{ profile.email }}</div>
+                        </div>
+                        <div class="row mb-2">
+                            <div class="col-5"><strong>Company:</strong></div>
+                            <div class="col-7">{{ profile.company.companyprofile.company_name }}</div>
+                        </div>
+                        <div class="row mb-2">
+                            <div class="col-5"><strong>Department:</strong></div>
+                            <div class="col-7">{{ profile.department }}</div>
+                        </div>
+                        <div class="row mb-2">
+                            <div class="col-5"><strong>Status:</strong></div>
+                            <div class="col-7">
+                                {% if profile.is_active %}Active{% else %}Suspended{% endif %}
+                            </div>
+                        </div>
+                        <hr>
+                        <h5 class="mt-3">My Usage</h5>
+                        <ul>
+                          <li>Documents: {{ doc_count }}</li>
+                          <li>Storage Used: {{ storage_used_mb }} MB</li>
+                        </ul>
+                        
+                        <h5 class="mt-3">Company Usage</h5>
+                        <ul>
+                          <li>Total Documents: {{ company_doc_count }}</li>
+                          <li>Total Storage: {{ company_storage_mb }} MB</li>
+                          <li>Storage Limit: {{ company_limit_gb }} GB</li>
+                        </ul>
+
+                    </div>
+                </div>
+            </div>
+
+            <!-- Editable Form -->
+            <div class="col-lg-6 mb-4">
+                <div class="form-section shadow-sm">
+                    <h6 class="fst-italic text-decoration-underline">Editable fields</h6>
+                    <div class="mb-3">
+                        <label for="employee_code" class="form-label">Employee Code</label>
+                        <input type="text" name="employee_code" class="form-control" value="{{ profile.employee_code }}" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="phone" class="form-label">Phone</label>
+                        <input type="text" name="phone" class="form-control" value="{{ profile.phone }}">
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="profile_picture" class="form-label">Profile Picture</label>
+                        <input type="file" name="profile_picture" class="form-control">
+                    </div>
+
+                    <button type="submit" class="btn btn-primary mt-2" style="background-color: #0a100d; border: none;">
+                        Save Changes
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+{% endblock %}

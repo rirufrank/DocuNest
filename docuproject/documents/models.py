@@ -25,7 +25,6 @@ class Document(models.Model):
 
     # File handling
     file = models.FileField(upload_to='documents/', validators=[validate_file_extension])
-    file_type = models.CharField(max_length=50, blank=True)  # auto-filled
     size = models.BigIntegerField(null=True, blank=True)  # in bytes
     
     @property
@@ -34,6 +33,7 @@ class Document(models.Model):
             return "0 MB"
         size_mb = self.size / (1024 * 1024)
         return f"{size_mb:.2f} MB"
+    
     # Timestamps
     uploaded_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -72,6 +72,9 @@ class Document(models.Model):
     # Optional: Department (if tied to employee)
     department = models.CharField(max_length=100, blank=True, null= True)
 
+    # For company admins to share with employees
+    is_company_wide = models.BooleanField(default=False)
+    
     # Optional: Public/Private toggle
     is_public = models.BooleanField(default=False)
 
@@ -119,5 +122,4 @@ class Document(models.Model):
     def save(self, *args, **kwargs):
         if self.file:
             self.size = self.file.size
-            self.file_type = self.categorize_file_type()
         super().save(*args, **kwargs)

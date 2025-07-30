@@ -1,0 +1,94 @@
+{% extends 'accounts/profiles/profilebase.html' %}
+{% block title %}Individual Profile{% endblock %}
+
+{% block extra_head %}
+<style>
+    .profile-card {
+        background-color: #e3f8ff;
+        color: var(--light);
+        border-radius: 10px;
+        padding: 1.25rem;
+    }
+
+    .profile-pic {
+        width: 60px;
+        height: 60px;
+        object-fit: cover;
+        border-radius: 50%;
+        border: 2px solid var(--mint);
+    }
+
+    .form-section {
+        background-color: #e3f8ff;
+        padding: 1.5rem;
+        border-radius: 10px;
+        color: var(--light);
+    }
+
+    .form-section input {
+        background-color: var(--light);
+        color: #000;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<h2 class="m-4">Welcome, {{ profile.full_name }}</h2>
+
+<form method="POST" enctype="multipart/form-data">
+    {% csrf_token %}
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Left: Static Profile Info -->
+            <div class="col-lg-6 mb-4">
+                <div class="profile-card shadow-sm">
+                    <div class="d-flex align-items-center mb-3">
+                        {% if profile.profile_picture %}
+                            <img src="{{ profile.profile_picture.url }}" class="profile-pic me-3" alt="Profile Picture">
+                        {% endif %}
+                        <div>
+                            <h5 class="mb-0">{{ profile.full_name }}</h5>
+                            <small  class="fst-italic text-decoration-underline text-dark">Individual Account</small>
+                        </div>
+                    </div>
+                    <p><strong>Email:</strong> {{ request.user.email }}</p>
+                    <p><strong>Gender:</strong> {{ profile.gender }}</p>
+                </div>
+
+                <!-- Package Info -->
+                {% if package %}
+                <div class="profile-card mt-4 shadow-sm">
+                    <h5 class="text-mint">Package Details</h5>
+                    <p><strong>Package:</strong> {{ package.name }}</p>
+                    <p><strong>Status:</strong> {{ package.status|default:"Active" }}</p>
+                    <p><strong>End Date:</strong> {{ package_instance.end_date }}</p>
+                </div>
+                {% else %}
+                <div class="alert alert-warning mt-4">
+                    No active package. <a href="{% url 'packages:pricing' %}" class="text-info">Choose a plan</a>.
+                </div>
+                {% endif %}
+            </div>
+
+            <!-- Right: Editable Fields -->
+            <div class="col-lg-6">
+                <div class="form-section shadow-sm">
+                    <div class="mb-3">
+                        <label for="phone" class="form-label">Phone</label>
+                        <input type="text" name="phone" value="{{ profile.phone }}" class="form-control">
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="profile_picture" class="form-label">Profile Picture</label><br>
+                        <input type="file" name="profile_picture" class="form-control">
+                    </div>
+
+                    <button type="submit" class="btn btn-primary mt-2" style="background-color: #0a100d; border: none;">
+                        Save Changes
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+{% endblock %}

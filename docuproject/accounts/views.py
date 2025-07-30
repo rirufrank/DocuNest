@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-from .forms import IndividualRegistrationForm,DepartmentForm, CompanyAdminRegistrationForm, EmployeeRegistrationForm, LoginForm
+from .forms import IndividualRegistrationForm,CompanyLogoForm, DepartmentForm, CompanyAdminRegistrationForm, EmployeeRegistrationForm, LoginForm, CompanyProfileForm
 from django.contrib import messages
 from django.contrib.auth import authenticate , login , logout
 from django.contrib.auth.decorators import login_required
@@ -8,11 +8,15 @@ from documents.models import Document
 from django.db.models import Sum
 from documents.forms import DocumentForm
 from django.utils import timezone
-from datetime import datetime
+from datetime import datetime,date
 from django.shortcuts import get_object_or_404
-from .models import CustomUser, EmployeeProfile, CompanyProfile, Department
+from .models import CustomUser, EmployeeProfile, CompanyProfile, Department, get_user_storage_limit_mb
 from packages.decorators import package_required
 from functools import wraps
+from packages.models import UserPackage
+import math
+from django.db.models import Q
+
 
 
 def role_required(required_role):
@@ -51,31 +55,213 @@ def register(request):
 
         if form.is_valid():
             form.save()
-            return redirect('accounts:login')  
+            messages.success(request, "Account created successfully. Please log in.")
+            return redirect('accounts:login')
+        else:
+            messages.error(request, "Registration failed. Please check the form for errors.")
 
     return render(request, 'accounts/register.html', {'form': form, 'type': reg_type})
+
 
 def user_login(request):
     if request.method == 'POST':
         form = LoginForm(request, data=request.POST)
         if form.is_valid():
-            email = form.cleaned_data.get('username')  # username is actually email
+            email = form.cleaned_data.get('username')  # username = email
             password = form.cleaned_data.get('password')
             user = authenticate(request, username=email, password=password)
             if user is not None:
                 login(request, user)
-                messages.success(request, f"Welcome {user.email}!")
-                return redirect('homepage')  # Set this to your post-login destination
+                messages.success(request, f"Welcome back, {user.email}!")
+                return redirect('homepage')  # change as needed
             else:
-                messages.error(request, "Invalid credentials")
+                messages.error(request, "Invalid email or password.")
+        else:
+            messages.warning(request, "Please enter correct details!")
     else:
         form = LoginForm()
+
     return render(request, 'accounts/login.html', {'form': form})
 
 def user_logout(request):
     logout(request)
     messages.success(request, "You have been logged out successfully.")
     return redirect('welcome')  
+
+@login_required
+def profile_redirect(request):
+    user = request.user
+    if user.user_type == 'individual':
+        return redirect('accounts:individual_profile')
+    elif user.user_type == 'company':
+        return redirect('accounts:company_profile')
+    elif user.user_type == 'employee':
+        return redirect('accounts:employee_profile')
+    else:
+        return redirect('accounts:dashboard')  # fallback
+    
+@login_required
+@role_required('employee')
+def employee_profile(request):
+    profile = request.user.employeeprofile
+
+    if request.method == 'POST':
+        phone = request.POST.get('phone')
+        employee_code = request.POST.get('employee_code')
+        profile_picture = request.FILES.get('profile_picture')
+
+        if phone:
+            profile.phone = phone
+        if employee_code:
+            profile.employee_code = employee_code
+        if profile_picture:
+            profile.profile_picture = profile_picture
+
+        profile.save()
+        messages.success(request, "Profile updated successfully.")
+        return redirect('accounts:employee_profile')
+
+    # Employee stats
+    documents = Document.objects.filter(owner=request.user, trashed=False)
+    doc_count = documents.count()
+    storage_used_mb = round((documents.aggregate(total=Sum('size'))['total'] or 0) / (1024 * 1024), 2)
+
+    # Company-wide stats
+    company_user = profile.company  # This is the company admin (CustomUser instance)
+    
+    # Get all employees under the company
+    company_employees = CustomUser.objects.filter(
+        user_type='employee',
+        employeeprofile__company=company_user
+    )
+    company_users = list(company_employees) + [company_user]  # include admin
+    
+    company_docs = Document.objects.filter(owner__in=company_users, trashed=False)
+    
+    company_doc_count = company_docs.count()
+    company_storage_mb = round((company_docs.aggregate(total=Sum('size'))['total'] or 0) / (1024 * 1024), 2)
+    
+    try:
+        user_package = UserPackage.objects.select_related('package').get(user=company_user)
+        company_limit_gb = user_package.package.storage_limit_gb
+    except UserPackage.DoesNotExist:
+        company_limit_gb = 0
+    
+
+    context = {
+        'profile': profile,
+        'doc_count': doc_count,
+        'storage_used_mb': storage_used_mb,
+        'company_doc_count': company_doc_count,
+        'company_storage_mb': company_storage_mb,
+        'company_limit_gb': company_limit_gb
+    }
+
+    return render(request, 'accounts/profiles/profile_employee.html', context)
+
+
+@login_required
+@role_required('individual')
+def individual_profile(request):
+    profile = request.user.individualprofile
+
+    # Get active package (if any)
+    try:
+        package_instance = UserPackage.objects.get(user=request.user, is_active=True)
+        package = package_instance.package
+        end_date = package_instance.end_date
+    except UserPackage.DoesNotExist:
+        package = None
+        days_remaining = None
+
+    # Handle profile updates
+    if request.method == 'POST':
+        phone = request.POST.get('phone')
+        profile_picture = request.FILES.get('profile_picture')
+
+        if phone:
+            profile.phone = phone
+        if profile_picture:
+            profile.profile_picture = profile_picture
+
+        profile.save()
+        messages.success(request, "Profile updated successfully.")
+        return redirect('accounts:individual_profile')
+
+    context = {
+        'profile': profile,
+        'package': package,
+        'package_instance': package_instance,
+        'end_date': end_date,
+    }
+    return render(request, 'accounts/profiles/profile_individual.html', context)
+
+@role_required('company')
+@login_required
+def company_profile(request):
+    user = request.user
+    company_profile = get_object_or_404(CompanyProfile, user=user)
+
+    try:
+        user_package = UserPackage.objects.get(user=user, is_active=True)
+        package = user_package.package
+        end_date = user_package.end_date
+        days_remaining = (end_date - date.today()).days
+    except UserPackage.DoesNotExist:
+        package = None
+        end_date = None
+        days_remaining = None
+
+    # Use one form (CompanyProfileForm) for now
+    info_form = CompanyProfileForm(request.POST or None, request.FILES or None, instance=company_profile)
+
+    if request.method == "POST":
+        if info_form.is_valid():
+            info_form.save()
+            messages.success(request, "Profile information updated!")
+            return redirect("accounts:company_profile")
+        else:
+            messages.error(request, "There were errors in the form. Please correct them.")
+
+    employee_count = EmployeeProfile.objects.filter(company=user).count()
+    department_count = Department.objects.filter(company=user).count()
+
+    context = {
+        'company': company_profile,
+        'user': user,
+        'package': package,
+        'end_date': end_date,
+        'days_remaining': days_remaining,
+        'employee_count': employee_count,
+        'department_count': department_count,
+        'info_form': info_form,
+    }
+    return render(request, 'accounts/profiles/profile_company.html', context)
+
+@login_required
+def update_company_logo(request):
+    if request.user.user_type != 'company':
+        messages.error(request, "Unauthorized access.")
+        return redirect('profile_redirect')  # or dashboard
+
+    company = get_object_or_404(CompanyProfile, user=request.user)
+
+    if request.method == 'POST':
+        form = CompanyLogoForm(request.POST, request.FILES, instance=company)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Logo updated successfully!")
+            return redirect('accounts:company_profile')  # or any other redirect
+        else:
+            messages.error(request, "Please fix the errors below.")
+    else:
+        form = CompanyLogoForm(instance=company)
+
+    return render(request, 'accounts/profiles/company_logo_update.html', {
+        'form': form,
+        'company': company,
+    })
+
 
 @login_required
 @package_required
@@ -96,6 +282,13 @@ def dashboard(request):
 @login_required
 @package_required
 def individual_dashboard(request):
+    user = request.user
+    profile = user.individualprofile
+
+    profile_picture_url = (
+        profile.profile_picture.url if profile.profile_picture else '/static/images/default-avatar.png'
+    )
+
     documents = Document.objects.filter(owner=request.user).order_by('-uploaded_at')[:4]
     total_documents = Document.objects.filter(owner=request.user).count()
 
@@ -103,8 +296,10 @@ def individual_dashboard(request):
     total_storage_bytes = sum([doc.file.size for doc in documents_qs if doc.file])
     total_storage_mb = round(total_storage_bytes / (1024 * 1024), 2)
 
-    INDIVIDUAL_STORAGE_LIMIT_MB = 100
+    INDIVIDUAL_STORAGE_LIMIT_MB = get_user_storage_limit_mb(request.user)
     storage_percent = min(100, round((total_storage_mb / INDIVIDUAL_STORAGE_LIMIT_MB) * 100, 2))
+
+    favorite_count = Document.objects.filter(owner=request.user, is_favorite=True).count()
 
     form = DocumentForm(request.POST, request.FILES)
     if form.is_valid():
@@ -115,7 +310,7 @@ def individual_dashboard(request):
         document.save()
         form.save_m2m()
         messages.success(request, "Document uploaded successfully.")
-        return redirect('individual_dashboard')
+        return redirect('accounts:individual_dashboard')
 
     context = {
         'form': form,
@@ -124,6 +319,8 @@ def individual_dashboard(request):
         'total_storage_mb': total_storage_mb,
         'storage_percent': storage_percent,
         'storage_limit_mb': INDIVIDUAL_STORAGE_LIMIT_MB,
+        'favorite_count': favorite_count,
+        'profile_picture_url': profile_picture_url,
     }
     return render(request, 'accounts/individual.html', context)
 
@@ -176,15 +373,12 @@ def company_dashboard(request):
 
 @role_required('employee')
 @login_required
-@package_required
 def employee_dashboard(request):
-    # Fetch docs uploaded by this employee
-    return render(request, 'accounts/employee.html')
+    employee_profile = request.user.employeeprofile  # This assumes a OneToOne link
+    return render(request, 'accounts/employee.html', {
+        'employee': employee_profile
+    })
 
-@login_required
-def superadmin_dashboard(request):
-    # System-wide overview
-    return render(request, 'accounts/superadmin.html')
 
 @role_required('company')
 @login_required
@@ -306,7 +500,7 @@ def create_department(request):
 
     if current_count >= max_departments:
         messages.error(request, f"You've reached the maximum of {max_departments} departments for your package.")
-        return redirect('accounts:manage_departments')  # ✅ plural
+        return redirect('accounts:manage_departments')  
 
     if request.method == 'POST':
         form = DepartmentForm(request.POST)
