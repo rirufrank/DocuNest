@@ -66,16 +66,31 @@
           {% endif %}
         </form>
       {% endif %}
-
+      
       <h4 class="fw-bold mt-3">{{ document.title }}</h4>
-
+      
       <p><strong>Type:</strong> {{ document.file.name|slice:"-4:"|upper }}</p>
-      <p><strong>Uploaded By:</strong> {{ document.owner.employeeprofile.full_name }}</p>
-      <p><strong>Department:</strong> {{ document.owner.employeeprofile.department }}</p>
+      
+      <p><strong>Uploaded By:</strong>
+        {% if document.owner.user_type == 'individual' %}
+          {{ document.owner.individualprofile.full_name }}
+        {% elif document.owner.user_type == 'company' %}
+          {{ document.owner.companyprofile.company_name }}
+        {% elif document.owner.user_type == 'employee' %}
+          {{ document.owner.employeeprofile.full_name }}
+        {% else %}
+          Unknown
+        {% endif %}
+      </p>
+      
+      {% if document.owner.user_type == 'employee' %}
+        <p><strong>Department:</strong> {{ document.owner.employeeprofile.department.name }}</p>
+      {% endif %}
+      
       <p><strong>Uploaded At:</strong> {{ document.uploaded_at|date:"F j, Y, g:i a" }}</p>
       <p><strong>Size:</strong> {{ document.size|filesizeformat }}</p>
       <p><strong>Description:</strong> {{ document.description|default:"No description provided." }}</p>
-
+      
       {% if document.shared_with.exists %}
         <p><strong>Shared With:</strong>
           {% for user in document.shared_with.all %}
@@ -85,7 +100,7 @@
       {% else %}
         <p><strong>Shared With:</strong> Not shared</p>
       {% endif %}
-
+      
       <div class="mt-4">
         <a href="{{ document.file.url }}" class="btn btn-outline-success btn-sm" target="_blank">View Document</a>
         <a href="{% url 'documents:download_document' document.id %}" class="btn btn-primary btn-sm">Download</a>

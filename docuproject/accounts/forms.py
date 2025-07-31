@@ -49,7 +49,6 @@ class CompanyAdminRegistrationForm(UserCreationForm):
     admin_full_name = forms.CharField(max_length=100)
     admin_phone = forms.CharField(max_length=20)
     industry = forms.CharField(max_length=100, required=False)
-    number_of_employees = forms.IntegerField(required=False)
 
     class Meta:
         model = CustomUser

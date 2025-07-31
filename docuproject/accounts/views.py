@@ -38,31 +38,51 @@ def register(request):
     reg_type = request.GET.get('type', 'individual')
 
     if reg_type == 'company':
-        form = CompanyAdminRegistrationForm()
+        form_class = CompanyAdminRegistrationForm
     elif reg_type == 'employee':
-        form = EmployeeRegistrationForm()
+        form_class = EmployeeRegistrationForm
     else:
         reg_type = 'individual'
-        form = IndividualRegistrationForm()
+        form_class = IndividualRegistrationForm
 
     if request.method == 'POST':
-        if reg_type == 'company':
-            form = CompanyAdminRegistrationForm(request.POST, request.FILES)
-        elif reg_type == 'employee':
-            form = EmployeeRegistrationForm(request.POST)
-        else:
-            form = IndividualRegistrationForm(request.POST)
+        form = form_class(request.POST, request.FILES if reg_type == 'company' else None)
 
         if form.is_valid():
+            if reg_type == 'employee':
+                company_user = form.cleaned_data.get('company')
+
+                if not company_user:
+                    messages.error(request, "Please select a valid company.")
+                    return render(request, 'accounts/register.html', {'form': form, 'type': reg_type})
+
+                try:
+                    user_package = UserPackage.objects.get(user=company_user, is_active=True)
+                except UserPackage.DoesNotExist:
+                    messages.error(request, "The company has no active subscription. Please contact the company administrator.")
+                    return render(request, 'accounts/register.html', {'form': form, 'type': reg_type})
+
+                # Check if company has room for another employee
+                max_employees = user_package.package.max_employees
+                current_count = CustomUser.objects.filter(
+                    user_type='employee',
+                    employeeprofile__company=company_user
+                ).count()
+
+                if current_count >= max_employees:
+                    messages.error(request, f"The company has reached its employee limit of {max_employees}.")
+                    return render(request, 'accounts/register.html', {'form': form, 'type': reg_type})
+
+            # All validations passed
             form.save()
             messages.success(request, "Account created successfully. Please log in.")
             return redirect('accounts:login')
         else:
             messages.error(request, "Registration failed. Please check the form for errors.")
+    else:
+        form = form_class()
 
     return render(request, 'accounts/register.html', {'form': form, 'type': reg_type})
-
-
 def user_login(request):
     if request.method == 'POST':
         form = LoginForm(request, data=request.POST)
@@ -73,7 +93,13 @@ def user_login(request):
             if user is not None:
                 login(request, user)
                 messages.success(request, f"Welcome back, {user.email}!")
-                return redirect('homepage')  # change as needed
+
+                # Redirect superuser to admin site
+                if user.is_superuser:
+                    return redirect('/admin/')
+
+                # Redirect regular user to homepage
+                return redirect('homepage')
             else:
                 messages.error(request, "Invalid email or password.")
         else:
@@ -274,7 +300,7 @@ def dashboard(request):
     elif user.user_type == 'employee':
         return redirect('accounts:employee_dashboard')
     elif user.is_superuser or user.user_type == 'superadmin':
-        return redirect('superadmin_dashboard')
+        return redirect('/admin/')
     else:
         return render(request, 'errors/unauthorized.html')
 

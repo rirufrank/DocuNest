@@ -1,0 +1,36 @@
+<!-- templates/admin/base_site.html -->
+{% extends "admin/base.html" %}
+{% load static%}
+{% block title %}Docunest | Superadmin{% endblock %}
+
+
+
+{% block extrastyle %}
+  {{ block.super }}
+  <!-- Inline Google Font -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+
+  <style>
+    body, html, #site-name, .module h2, #content h1, #content h2 {
+      font-family: 'Poppins', sans-serif !important;
+    }
+    #header {
+      background-color: #0a100d;
+    }
+    #site-name a {
+      color: #e3f8ff !important;
+    }
+  </style>
+{% endblock %}
+
+{% block branding %}
+  <h1 id="site-name">
+    <img src="{% static 'images/logo_.png' %}" alt="Logo" height="40" style="border-radius:5%;">
+    <a href="{% url 'admin:index' %}" style="color: #e3f8ff;">Docunest Admin</a>
+  </h1>
+{% endblock %}
+
+{% block nav-global %}
+  <!-- Optional: add a link to homepage or support -->
+  <a href="{% url 'homepage' %}" class="button">← Head to Site</a>
+{% endblock %}

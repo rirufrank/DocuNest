@@ -49,7 +49,7 @@ def documentredirect(request):
     elif user.user_type == 'employee':
         return redirect('documents:employeedocs')
     else:
-        return redirect('documents:login')  # or show error
+        return redirect('/admin/')
 
 @login_required
 def view_document(request, doc_id):

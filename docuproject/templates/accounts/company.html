@@ -206,7 +206,7 @@
                       <td>{{ employee.department.name }}</td>
                       <td>{{ employee.upload_count }}</td>
                       <td>
-                        {% if employee.status %}
+                        {% if employee.is_active %}
                           <span class="badge bg-success">Active</span>
                         {% else %}
                           <span class="badge bg-secondary">Inactive</span>
