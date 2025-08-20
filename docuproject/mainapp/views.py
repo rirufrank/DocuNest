@@ -12,7 +12,8 @@ def services(request):
     return render(request, 'services.html')
 
 def homepage(request):
-    return render(request, 'homepage.html')
+    title= 'Homepage'
+    return render(request, 'homepage.html',{'title': title})
 
 def about(request):
     return render(request, 'about.html')

@@ -4,6 +4,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from .forms import DocumentForm
 from .models import Document
+from packages.models import UserPackage
 from django.http import HttpResponseForbidden, JsonResponse
 from django.views.decorators.http import require_POST
 from django.http import FileResponse, Http404
@@ -137,15 +138,26 @@ def download_document(request, doc_id):
         raise Http404("You do not have permission to view this document.")
 
 
-
 @login_required
 def upload_document(request):
+    user = request.user
+
+    # Prevent individuals or companies without an active package from uploading
+    if user.user_type in ['individual', 'company']:
+        try:
+            user_package = UserPackage.objects.get(user=user)
+            if not user_package.is_active or user_package.is_expired():
+                messages.warning(request, "You need an active subscription to upload documents.")
+                return redirect('packages:pricing')  # Adjust to your actual route
+        except UserPackage.DoesNotExist:
+            messages.warning(request, "You need an active subscription to upload documents.")
+            return redirect('packages:pricing')
+
     if request.method == 'POST':
         form = DocumentForm(request.POST, request.FILES)
 
         if form.is_valid():
-            # Check for inactive employee AFTER form is valid
-            user = request.user
+            # Block inactive employees
             if user.user_type == 'employee' and hasattr(user, 'employeeprofile'):
                 if not user.employeeprofile.is_active:
                     messages.error(request, "Upload failed. Your account is inactive. Please contact your company admin.")
@@ -154,15 +166,16 @@ def upload_document(request):
             doc = form.save(commit=False)
             doc.owner = user
 
-            if hasattr(user, 'employeeprofile'):
+            # Assign department and scope based on user type
+            if user.user_type == 'employee' and hasattr(user, 'employeeprofile'):
                 doc.department = user.employeeprofile.department or ''
                 doc.is_company_wide = False
             elif user.user_type == 'company':
+                doc.department = ''
                 doc.is_company_wide = True
+            else:  # individual
                 doc.department = ''
-            else:
                 doc.is_company_wide = False
-                doc.department = ''
 
             try:
                 doc.full_clean()
@@ -178,6 +191,7 @@ def upload_document(request):
         form = DocumentForm()
 
     return render(request, 'documents/upload.html', {'form': form})
+
 
 @login_required
 def delete_document(request, pk):
